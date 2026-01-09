@@ -9,7 +9,7 @@ const tourMiddlewares = require('../middlewares/tour.middleware');
 router
   .route('/')
   .get(tourControllers.getAllTour)
-  .post(tourMiddlewares.checkBody, tourControllers.createTour);
+  .post(tourControllers.createTour);
 
 router
   .route('/:id')

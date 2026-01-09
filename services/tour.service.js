@@ -1,10 +1,13 @@
 const Tour = require('../models/tour.model');
 
-exports.deleteTour = (tourId) => {};
+exports.getAllTour = () => {
+  return Tour.find({});
+};
 
-exports.getAllTour = () => {};
-
-exports.getTour = (tourId) => {};
+exports.getTour = async (tourId) => {
+  // return Tour.findOne({ _id: tourId });
+  return Tour.findById(tourId);
+};
 
 exports.createTour = async (data) => {
   // return await Tour.create(data);
@@ -18,4 +21,14 @@ exports.createTour = async (data) => {
   }
 };
 
-exports.updateTour = (tourId) => {};
+exports.updateTour = async (tourId, data) => {
+  // return await Tour.updateOne({ _id: tourId }, data)
+  return await Tour.findByIdAndUpdate(tourId, data, {
+    new: true,
+    runValidators: true,
+  });
+};
+
+exports.deleteTour = async (tourId) => {
+  await Tour.findByIdAndDelete(tourId);
+};

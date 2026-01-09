@@ -1,82 +1,57 @@
 const tourServices = require('../services/tour.service');
 const catchAsync = require('../utils/catchAsync');
 
-exports.getAllTour = (req, res) => {
-  const data = tourServices.getAllTour();
-  res.status(200).json({
-    status: 'success',
-    results: data.length,
-    data: {
-      tours: data,
-    },
-  });
-};
-
-exports.getTour = (req, res) => {
-  const data = tourServices.getTour(req.params.id * 1);
-
-  if (data === null) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Tour not found!',
-      data: null,
-    });
-  }
+exports.getAllTour = catchAsync(async (req, res) => {
+  const tours = await tourServices.getAllTour();
 
   res.status(200).json({
     status: 'success',
+    results: tours.length,
     data: {
-      tour: data,
+      tours: tours,
     },
   });
-};
+});
 
-exports.createTour = catchAsync(async (req, res) => {
-  const tour = await tourServices.createTour(req.body);
+exports.getTour = catchAsync(async (req, res) => {
+  const tour = await tourServices.getTour(req.params.id);
 
-  res.status(201).json({
+  res.status(200).json({
     status: 'success',
-    message: 'Created a tour successfully!',
     data: {
       tour: tour,
     },
   });
 });
 
-exports.updateTour = (req, res) => {
-  const data = tourServices.updateTour(req.params.id * 1, req.body);
+exports.createTour = catchAsync(async (req, res) => {
+  const tour = await tourServices.createTour(req.body);
 
-  if (data === null) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Tour not found!',
-      data: null,
-    });
-  }
-
-  res.status(200).json({
-    status: 'fail',
-    message: 'Updated a tour successfully!',
+  res.status(201).json({
+    status: 'success',
     data: {
-      tour: data,
+      tour: tour,
     },
   });
-};
+});
 
-exports.deleteTour = (req, res) => {
-  const data = tourServices.deleteTour(req.params.id * 1);
+exports.updateTour = catchAsync(async (req, res) => {
+  const tour = await tourServices.updateTour(req.params.id, req.body);
 
-  if (data === null) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Error occurred while delete tour data!',
-      data: null,
-    });
-  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: tour,
+    },
+  });
+});
+
+exports.deleteTour = catchAsync(async (req, res) => {
+  await tourServices.deleteTour(req.params.id);
 
   res.status(204).json({
     status: 'success',
-    message: 'Tour deleted successfully!',
+    message: 'Deleted a tour successfully!',
     data: null,
   });
-};
+});
