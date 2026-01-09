@@ -1,4 +1,5 @@
 const tourServices = require('../services/tour.service');
+const catchAsync = require('../utils/catchAsync');
 
 exports.getAllTour = (req, res) => {
   const data = tourServices.getAllTour();
@@ -30,17 +31,17 @@ exports.getTour = (req, res) => {
   });
 };
 
-exports.createTour = (req, res) => {
-  const data = tourServices.createTour(req.body);
+exports.createTour = catchAsync(async (req, res) => {
+  const tour = await tourServices.createTour(req.body);
 
   res.status(201).json({
     status: 'success',
     message: 'Created a tour successfully!',
     data: {
-      tour: data,
+      tour: tour,
     },
   });
-};
+});
 
 exports.updateTour = (req, res) => {
   const data = tourServices.updateTour(req.params.id * 1, req.body);

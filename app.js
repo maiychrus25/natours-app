@@ -1,6 +1,8 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const morgan = require('morgan');
+
+const AppError = require('./utils/appError');
+const globalErrorHandle = require('./services/error.service');
 
 const app = express();
 
@@ -16,5 +18,11 @@ const userRoutes = require('./routes/user.route');
 
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can not find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(globalErrorHandle);
 
 module.exports = app;
