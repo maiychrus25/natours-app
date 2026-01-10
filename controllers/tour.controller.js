@@ -3,21 +3,29 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getAllTour = catchAsync(async (req, res) => {
-  // 1) Filtering
-  const queryObj = { ...req.query };
+  // 1A) Filtering
+  const filter = { ...req.query };
   const excludedFields = ['limit', 'page', 'sort'];
 
   excludedFields.forEach((el) => {
-    delete queryObj[el];
+    delete filter[el];
   });
 
-  // 2) Advanced Filtering
-  let queryStr = JSON.stringify(queryObj);
+  // 1B) Advanced Filtering
+  let filterStr = JSON.stringify(filter);
 
   // eslint-disable-next-line arrow-body-style
-  queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
+  filterStr = filterStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
 
-  const tours = await tourServices.getAllTour(JSON.parse(queryStr));
+  // 2) Sorting
+  const options = {};
+  if (req.query && req.query.sort) {
+    options.sortBy = req.query.sort.split(',').join(' ');
+  } else {
+    options.sortBy = '-createdAt';
+  }
+
+  const tours = await tourServices.getAllTour(JSON.parse(filterStr), options);
 
   res.status(200).json({
     status: 'success',

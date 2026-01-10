@@ -10,8 +10,8 @@ const Tour = require('../models/tour.model');
  * @returns {Promise <QueryResult>}
  **/
 
-exports.getAllTour = async (filter) => {
-  return Tour.find(filter);
+exports.getAllTour = async (filter, options) => {
+  return Tour.find(filter).sort(options.sortBy);
 };
 
 exports.getTour = async (tourId) => {

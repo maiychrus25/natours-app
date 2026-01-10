@@ -100,6 +100,8 @@ GET /api/tours?duration[gte]=5&difficulty=easy&price[lte]=2000&sort=price:asc&pa
     "prevPage": null
   }
 }
+```
+
 Notes
 Toán tử hỗ trợ: gte, gt, lte, lt
 
@@ -108,4 +110,3 @@ Sorting mặc định: createdAt:desc nếu không truyền sort
 Pagination mặc định: page=1, limit=10
 
 Nếu không truyền fields, API trả về tất cả các trường của Tour
-```
