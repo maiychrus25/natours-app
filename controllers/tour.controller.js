@@ -25,6 +25,19 @@ exports.getAllTour = catchAsync(async (req, res) => {
     options.sortBy = '-createdAt';
   }
 
+  // 3) Pagination
+  if (req.query && req.query.page) {
+    options.page = req.query.page;
+  } else {
+    options.page = 1;
+  }
+
+  if (req.query && req.query.limit) {
+    options.limit = req.query.limit;
+  } else {
+    options.limit = 5;
+  }
+
   // 3) Limit fields
   if (req.query && req.query.fields) {
     options.fields = req.query.fields.split(',').join(' ');

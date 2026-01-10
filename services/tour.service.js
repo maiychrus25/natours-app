@@ -11,7 +11,20 @@ const Tour = require('../models/tour.model');
  **/
 
 exports.getAllTour = async (filter, options) => {
-  return Tour.find(filter).sort(options.sortBy).select(options.fields);
+  const numTours = await Tour.countDocuments(filter);
+
+  const totalPages = Math.ceil(numTours / options.limit);
+  if (options.page > totalPages) {
+    throw new Error('This page does not exist!');
+  }
+
+  const skip = (options.page * 1 - 1) * options.limit;
+
+  return Tour.find(filter)
+    .select(options.fields)
+    .sort(options.sortBy)
+    .skip(skip)
+    .limit(options.limit);
 };
 
 exports.getTour = async (tourId) => {
