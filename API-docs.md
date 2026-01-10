@@ -110,3 +110,22 @@ Sorting mặc định: createdAt:desc nếu không truyền sort
 Pagination mặc định: page=1, limit=10
 
 Nếu không truyền fields, API trả về tất cả các trường của Tour
+
+## Một số HTTP status code phổ biến trong thư viện `http-status`
+
+| Constant                             | Code | Mô tả                           |
+| ------------------------------------ | ---- | ------------------------------- |
+| `httpStatus.OK`                      | 200  | Success                         |
+| `httpStatus.CREATED`                 | 201  | Resource created                |
+| `httpStatus.ACCEPTED`                | 202  | Request accepted                |
+| `httpStatus.NO_CONTENT`              | 204  | Success nhưng không có body     |
+| `httpStatus.BAD_REQUEST`             | 400  | Request sai                     |
+| `httpStatus.UNAUTHORIZED`            | 401  | Chưa xác thực                   |
+| `httpStatus.FORBIDDEN`               | 403  | Không được phép                 |
+| `httpStatus.NOT_FOUND`               | 404  | Resource không tìm thấy         |
+| `httpStatus.METHOD_NOT_ALLOWED`      | 405  | Method HTTP không cho phép      |
+| `httpStatus.CONFLICT`                | 409  | Conflict, ví dụ duplicate key   |
+| `httpStatus.UNPROCESSABLE_ENTITY`    | 422  | Validation error                |
+| `httpStatus.INTERNAL_SERVER_ERROR`   | 500  | Lỗi server                      |
+| `httpStatus.NOT_IMPLEMENTED`         | 501  | Chưa implement                  |
+| ------------------------------------ | END  | ------------------------------- |
