@@ -1,7 +1,21 @@
 const User = require('../models/user.model');
 
-exports.getAllUser = async () => {
-  const users = await User.find({});
+exports.getAllUser = async (filter, options) => {
+  const numUsers = await User.countDocuments(filter);
+  const totalPages = Math.ceil(numUsers / options.limit);
+
+  if (options.page > totalPages) {
+    throw new Error('This page does not exist!');
+  }
+
+  const skip = (options.page - 1) * options.limit;
+
+  const users = await User.find(filter)
+    .select(options.fields)
+    .sort(options.sortBy)
+    .skip(skip)
+    .limit(options.limit);
+
   return users || [];
 };
 
