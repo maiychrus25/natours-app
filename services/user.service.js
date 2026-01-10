@@ -1,20 +1,36 @@
 const User = require('../models/user.model');
+const APIFeatures = require('../utils/APIFeatures');
 
-exports.getAllUser = async (filter, options) => {
-  const numUsers = await User.countDocuments(filter);
-  const totalPages = Math.ceil(numUsers / options.limit);
+exports.getAllUser = async (queryString) => {
+  // 1) Count total documents matching filter
+  const filterObj = { ...queryString };
+  const excludedFields = ['limit', 'page', 'sort', 'fields'];
 
-  if (options.page > totalPages) {
+  excludedFields.forEach((el) => {
+    delete filterObj[el];
+  });
+
+  let filterStr = JSON.stringify(filterObj);
+  // eslint-disable-next-line arrow-body-style
+  filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/g, (match) => `$${match}`);
+
+  const totalDocs = await User.countDocuments(JSON.parse(filterStr));
+
+  // 2) Apply features
+  const features = new APIFeatures(
+    User.find(JSON.parse(filterStr)),
+    queryString,
+  );
+  const users = await features.limitFields().sort().paginate().query;
+
+  // 3) Pagination check
+  const limit = queryString.limit * 1 || 5;
+  const page = queryString.page * 1 || 1;
+
+  const totalPages = Math.ceil(totalDocs / limit);
+  if (page > totalPages && totalDocs > 0) {
     throw new Error('This page does not exist!');
   }
-
-  const skip = (options.page - 1) * options.limit;
-
-  const users = await User.find(filter)
-    .select(options.fields)
-    .sort(options.sortBy)
-    .skip(skip)
-    .limit(options.limit);
 
   return users || [];
 };

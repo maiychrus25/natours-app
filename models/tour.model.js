@@ -49,6 +49,7 @@ const tourSchema = new mongoose.Schema(
           return val < this.price;
         },
         message: (props) =>
+          // eslint-disable-next-line arrow-body-style
           `${props.value} is not a valid number, Discount price should be below regular price!`,
       },
     },
@@ -136,6 +137,9 @@ tourSchema.pre('aggregate', function (next) {
   next();
 });
 
+/**
+ * @typedef Tour
+ **/
 const Tour = mongoose.model('Tour', tourSchema, 'tours');
 
 module.exports = Tour;

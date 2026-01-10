@@ -1,4 +1,5 @@
 const Tour = require('../models/tour.model');
+const APIFeatures = require('../utils/APIFeatures');
 
 /**
  * Query for tours
@@ -10,21 +11,37 @@ const Tour = require('../models/tour.model');
  * @returns {QueryResult}
  **/
 
-exports.getAllTour = async (filter, options) => {
-  const numTours = await Tour.countDocuments(filter);
+exports.getAllTour = async (queryString) => {
+  // 1) Count total documents matching filter
+  const filterObj = { ...queryString };
+  const excludedFields = ['limit', 'page', 'sort', 'fields'];
 
-  const totalPages = Math.ceil(numTours / options.limit);
-  if (options.page > totalPages) {
+  // eslint-disable-next-line arrow-body-style
+  excludedFields.forEach((el) => delete filterObj[el]);
+
+  let filterStr = JSON.stringify(filterObj);
+  // eslint-disable-next-line arrow-body-style
+  filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/, (match) => `$${match}`);
+
+  const totalDocs = await Tour.countDocuments(JSON.parse(filterStr));
+
+  // 2) Apply features
+  const features = new APIFeatures(
+    Tour.find(JSON.parse(filterStr)),
+    queryString,
+  );
+  const tours = await features.limitFields().sort().paginate().query;
+
+  // 3) Pagination check
+  const limit = queryString.limit * 1 || 5;
+  const page = queryString.page * 1 || 1;
+
+  const totalPages = Math.ceil(totalDocs / limit);
+  if (page > totalPages && totalDocs > 0) {
     throw new Error('This page does not exist!');
   }
 
-  const skip = (options.page * 1 - 1) * options.limit;
-
-  return Tour.find(filter)
-    .select(options.fields)
-    .sort(options.sortBy)
-    .skip(skip)
-    .limit(options.limit);
+  return tours || [];
 };
 
 /**

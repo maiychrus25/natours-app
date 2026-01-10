@@ -3,49 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getAllTour = catchAsync(async (req, res) => {
-  // 1A) Filtering
-  const filter = { ...req.query };
-  const excludedFields = ['limit', 'page', 'sort', 'fields'];
-
-  excludedFields.forEach((el) => {
-    delete filter[el];
-  });
-
-  // 1B) Advanced Filtering
-  let filterStr = JSON.stringify(filter);
-
-  // eslint-disable-next-line arrow-body-style
-  filterStr = filterStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
-
-  // 2) Sorting
-  const options = {};
-  if (req.query && req.query.sort) {
-    options.sortBy = req.query.sort.split(',').join(' ');
-  } else {
-    options.sortBy = '-createdAt';
-  }
-
-  // 3) Pagination
-  if (req.query && req.query.page) {
-    options.page = req.query.page;
-  } else {
-    options.page = 1;
-  }
-
-  if (req.query && req.query.limit) {
-    options.limit = req.query.limit;
-  } else {
-    options.limit = 5;
-  }
-
-  // 4) Limit fields
-  if (req.query && req.query.fields) {
-    options.fields = req.query.fields.split(',').join(' ');
-  } else {
-    options.fields = '-__v';
-  }
-
-  const tours = await tourServices.getAllTour(JSON.parse(filterStr), options);
+  const tours = await tourServices.getAllTour(req.query);
 
   res.status(200).json({
     status: 'success',

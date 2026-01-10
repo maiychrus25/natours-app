@@ -3,49 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
-  // 1A) Filtering
-  const filter = { ...req.query };
-  const excludedFields = ['limit', 'page', 'sort', 'fields'];
-
-  excludedFields.forEach((el) => {
-    delete filter[el];
-  });
-
-  // 1B) Advanced Filtering
-  let filterStr = JSON.stringify(filter);
-
-  // eslint-disable-next-line arrow-body-style
-  filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/g, (match) => `$${match}`);
-
-  // 2) Sorting
-  const options = {};
-  if (req.query && req.query.sort) {
-    options.sortBy = req.query.sort.split(',').join(' ');
-  } else {
-    options.sortBy = '-createdAt _id';
-  }
-
-  // 3) Pagination
-  if (req.query && req.query.page) {
-    options.page = req.query.page * 1;
-  } else {
-    options.page = 1;
-  }
-
-  if (req.query && req.query.limit) {
-    options.limit = req.query.limit * 1;
-  } else {
-    options.limit = 5;
-  }
-
-  // 4) Limiting fields
-  if (req.query && req.query.fields) {
-    options.fields = req.query.fields.split(',').join(' ');
-  } else {
-    options.fields = '-__v';
-  }
-
-  const users = await userServices.getAllUser(JSON.parse(filterStr), options);
+  const users = await userServices.getAllUser(req.query);
 
   res.status(200).json({
     status: 'success',
