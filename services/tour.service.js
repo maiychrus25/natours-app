@@ -7,7 +7,7 @@ const Tour = require('../models/tour.model');
  * @param {string} [options.sortBy] - Sort option in the format: sortField: (desc|asc)
  * @param {number} [options.limit] - Maximum number of results per page (default = 5)
  * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise <QueryResult>}
+ * @returns {QueryResult}
  **/
 
 exports.getAllTour = async (filter, options) => {
@@ -27,22 +27,33 @@ exports.getAllTour = async (filter, options) => {
     .limit(options.limit);
 };
 
+/**
+ * Get tour by id
+ * @param {ObjectId} id
+ * @returns {Tour}
+ **/
+
 exports.getTour = async (tourId) => {
   // return Tour.findOne({ _id: tourId });
   return Tour.findById(tourId);
 };
 
+/**
+ * Create a tour
+ * @param {Object} tourBody
+ * @returns {Tour}
+ **/
+
 exports.createTour = async (data) => {
   return await Tour.create(data);
-  // or
-
-  /* try {
-    const newTour = await Tour.create(data);
-    return newTour;
-  } catch (err) {
-    throw err;
-  } */
 };
+
+/**
+ * Update tour by id
+ * @param {ObjectId} id
+ * @param {Object} updateBody
+ * @returns {updateTour}
+ **/
 
 exports.updateTour = async (tourId, data) => {
   // return await Tour.updateOne({ _id: tourId }, data)
@@ -51,6 +62,12 @@ exports.updateTour = async (tourId, data) => {
     runValidators: true,
   });
 };
+
+/**
+ * Delete tour by id
+ * @param {ObjectId} tourId
+ * @returns {null}
+ **/
 
 exports.deleteTour = async (tourId) => {
   await Tour.findByIdAndDelete(tourId);

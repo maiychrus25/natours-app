@@ -3,6 +3,16 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
+  // 1A) Filtering
+  const filter = { ...req.query };
+  const excludedFields = ['limit', 'page', 'sort', 'fields'];
+
+  excludedFields.forEach((el) => {
+    delete filter[el];
+  });
+
+  // 1B) Advanced Filtering
+
   const users = await userServices.getAllUser();
 
   res.status(200).json({
