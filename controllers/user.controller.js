@@ -1,82 +1,66 @@
 const userServices = require('../services/user.service');
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
-exports.getAllUser = (req, res) => {
-  const data = userServices.getAllUser();
+exports.getAllUser = catchAsync(async (req, res, next) => {
+  const users = await userServices.getAllUser();
 
   res.status(200).json({
     status: 'success',
-    results: data.length,
+    results: users.length,
     data: {
-      users: data,
+      users: users,
     },
   });
-};
+});
 
-exports.getUser = (req, res) => {
-  const data = userServices.getUser(req.params.id);
+exports.getUser = catchAsync(async (req, res, next) => {
+  const user = await userServices.getUser(req.params.id);
 
-  if (data === null) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'User not found!',
-      data: null,
-    });
+  if (!user) {
+    return next(new AppError('No user found with that ID!', 404));
   }
 
   res.status(200).json({
     status: 'success',
     data: {
-      user: data,
+      user: user,
     },
   });
-};
+});
 
-exports.createUser = (req, res) => {
-  const data = userServices.createUser(req.body);
+exports.createUser = catchAsync(async (req, res, next) => {
+  const newUser = await userServices.createUser(req.body);
 
   res.status(201).json({
     status: 'success',
-    message: 'User created successfully!',
     data: {
-      user: data,
+      user: newUser,
     },
   });
-};
+});
 
-exports.updateUser = (req, res) => {
-  const data = userServices.updateUser(req.params.id, req.body);
+exports.updateUser = catchAsync(async (req, res, next) => {
+  const user = await userServices.updateUser(req.params.id, req.body);
 
-  if (data === null) {
-    return res.status(404).json({
-      status: 'fail',
-      message: ' not found!',
-      data: null,
-    });
+  if (!user) {
+    return next(new AppError('No user found to update!', 404));
   }
 
   res.status(200).json({
     status: 'success',
-    message: 'User updated successfully!',
     data: {
-      user: data,
+      user: user,
     },
   });
-};
+});
 
-exports.deleteUser = (req, res) => {
-  const data = userServices.deleteUser(req.params.id);
-
-  if (data === null) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'User not found!',
-      data: null,
-    });
-  }
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  await userServices.deleteUser(req.params.id);
 
   res.status(204).json({
     status: 'success',
-    message: 'User deleted successfully!',
+    message: 'Deleted a user successfully!',
     data: null,
   });
-};
+});
