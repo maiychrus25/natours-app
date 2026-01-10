@@ -1,3 +1,4 @@
+const httpStatus = require('http-status');
 const express = require('express');
 const morgan = require('morgan');
 
@@ -20,7 +21,12 @@ app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 
 app.all('*', (req, res, next) => {
-  next(new AppError(`Can not find ${req.originalUrl} on this server!`, 404));
+  next(
+    new AppError(
+      `Can not find ${req.originalUrl} on this server!`,
+      httpStatus.NOT_FOUND,
+    ),
+  );
 });
 
 app.use(globalErrorHandle);
