@@ -1,5 +1,6 @@
 const tourServices = require('../services/tour.service');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 exports.getAllTour = catchAsync(async (req, res) => {
   const tours = await tourServices.getAllTour();
@@ -13,8 +14,12 @@ exports.getAllTour = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTour = catchAsync(async (req, res) => {
+exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await tourServices.getTour(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID!', 404));
+  }
 
   res.status(200).json({
     status: 'success',
@@ -35,8 +40,12 @@ exports.createTour = catchAsync(async (req, res) => {
   });
 });
 
-exports.updateTour = catchAsync(async (req, res) => {
+exports.updateTour = catchAsync(async (req, res, next) => {
   const tour = await tourServices.updateTour(req.params.id, req.body);
+
+  if (!tour) {
+    return next(new AppError('No tour found to update!', 404));
+  }
 
   res.status(200).json({
     status: 'success',
