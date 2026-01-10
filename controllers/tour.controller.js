@@ -67,3 +67,14 @@ exports.deleteTour = catchAsync(async (req, res) => {
     data: null,
   });
 });
+
+exports.getTourStats = catchAsync(async (req, res) => {
+  const tourStats = await tourServices.getTourStats();
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: {
+      stats: tourStats,
+    },
+  });
+});
