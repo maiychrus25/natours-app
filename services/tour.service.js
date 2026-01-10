@@ -11,7 +11,7 @@ const Tour = require('../models/tour.model');
  **/
 
 exports.getAllTour = async (filter, options) => {
-  return Tour.find(filter).sort(options.sortBy);
+  return Tour.find(filter).sort(options.sortBy).select(options.fields);
 };
 
 exports.getTour = async (tourId) => {

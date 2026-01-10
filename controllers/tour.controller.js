@@ -5,7 +5,7 @@ const AppError = require('../utils/appError');
 exports.getAllTour = catchAsync(async (req, res) => {
   // 1A) Filtering
   const filter = { ...req.query };
-  const excludedFields = ['limit', 'page', 'sort'];
+  const excludedFields = ['limit', 'page', 'sort', 'fields'];
 
   excludedFields.forEach((el) => {
     delete filter[el];
@@ -23,6 +23,13 @@ exports.getAllTour = catchAsync(async (req, res) => {
     options.sortBy = req.query.sort.split(',').join(' ');
   } else {
     options.sortBy = '-createdAt';
+  }
+
+  // 3) Limit fields
+  if (req.query && req.query.fields) {
+    options.fields = req.query.fields.split(',').join(' ');
+  } else {
+    options.fields = '-__v';
   }
 
   const tours = await tourServices.getAllTour(JSON.parse(filterStr), options);
