@@ -8,6 +8,15 @@ const handleCastErrorDB = (err) => {
   return new AppError(message, statusCode);
 };
 
+const handleDuplicateFields = (err) => {
+  const statusCode = httpStatus.BAD_REQUEST;
+  // const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const value = err.keyValue.name;
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+
+  return new AppError(message, statusCode);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -44,9 +53,12 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
 
     // handle error from mongoDB
-    if (!error.CastError || error.name === 'CastError') {
+    if (error.code === 11000) {
+      error = handleDuplicateFields(error);
+    }
+
+    if (!error.CastError && error.path) {
       error = handleCastErrorDB(error);
-      console.log(error);
     }
 
     sendErrorProd(error, res);
