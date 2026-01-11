@@ -17,6 +17,14 @@ const handleDuplicateFields = (err) => {
   return new AppError(message, statusCode);
 };
 
+const handleErrorValidation = (err) => {
+  const statusCode = httpStatus.BAD_REQUEST;
+  const data = Object.entries(err.errors)[0];
+  const message = `Invalid ${data[0]}: ${data[1]}!`;
+
+  return new AppError(message, statusCode);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -46,6 +54,7 @@ const sendErrorProd = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
   err.statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
+  console.log(err);
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
@@ -55,6 +64,10 @@ module.exports = (err, req, res, next) => {
     // handle error from mongoDB
     if (error.code === 11000) {
       error = handleDuplicateFields(error);
+    }
+
+    if (error.errors) {
+      error = handleErrorValidation(error);
     }
 
     if (!error.CastError && error.path) {
