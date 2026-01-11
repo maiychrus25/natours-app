@@ -87,7 +87,7 @@ exports.updateTour = async (tourId, data) => {
  **/
 
 exports.deleteTour = async (tourId) => {
-  await Tour.findByIdAndDelete(tourId);
+  return await Tour.findByIdAndDelete(tourId);
 };
 
 exports.getTourStats = async () => {

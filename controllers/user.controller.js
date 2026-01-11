@@ -59,7 +59,11 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
-  await userServices.deleteUser(req.params.id);
+  const tour = await userServices.deleteUser(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No user with that ID!', 404));
+  }
 
   res.status(httpStatus.NO_CONTENT).json({
     status: 'success',

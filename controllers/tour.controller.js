@@ -3,7 +3,7 @@ const tourServices = require('../services/tour.service');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-exports.getAllTour = catchAsync(async (req, res) => {
+exports.getAllTour = catchAsync(async (req, res, next) => {
   const tours = await tourServices.getAllTour(req.query);
 
   res.status(httpStatus.OK).json({
@@ -58,8 +58,12 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res) => {
-  await tourServices.deleteTour(req.params.id);
+exports.deleteTour = catchAsync(async (req, res, next) => {
+  const tour = await tourServices.deleteTour(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID!', 404));
+  }
 
   res.status(httpStatus.NO_CONTENT).json({
     status: 'success',
@@ -68,7 +72,7 @@ exports.deleteTour = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTourStats = catchAsync(async (req, res) => {
+exports.getTourStats = catchAsync(async (req, res, next) => {
   const tourStats = await tourServices.getTourStats();
 
   res.status(httpStatus.OK).json({
@@ -79,7 +83,7 @@ exports.getTourStats = catchAsync(async (req, res) => {
   });
 });
 
-exports.getMonthlyPlan = catchAsync(async (req, res) => {
+exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const plan = await tourServices.getMonthlyPlan(req.params.year * 1);
 
   res.status(httpStatus.OK).json({
