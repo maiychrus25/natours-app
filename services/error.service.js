@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 
 module.exports = (err, req, res, next) => {
-  err.status = err.status || 'fail';
+  err.status = err.status || 'error';
   err.statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
 
   res.status(err.statusCode).json({
