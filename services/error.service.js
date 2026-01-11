@@ -1,4 +1,12 @@
 const httpStatus = require('http-status');
+const AppError = require('../utils/appError');
+
+const handleCastErrorDB = (err) => {
+  const statusCode = httpStatus.BAD_REQUEST;
+  const message = `Invalid ${err.path}: ${err.value}!`;
+
+  return new AppError(message, statusCode);
+};
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -33,6 +41,14 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(err, res);
+    let error = { ...err };
+
+    // handle error from mongoDB
+    if (!error.CastError || error.name === 'CastError') {
+      error = handleCastErrorDB(error);
+      console.log(error);
+    }
+
+    sendErrorProd(error, res);
   }
 };

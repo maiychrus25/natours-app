@@ -7,7 +7,7 @@
   "description": "Learning node, express and mongoDB",
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "cross-env NODE_ENVV=production nodemon server.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon server.js",
     "lint": "eslint . --ext .js",
     "debug": "ndb server.js"
   },
