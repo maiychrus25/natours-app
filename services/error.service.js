@@ -10,17 +10,17 @@ const handleCastErrorDB = (err) => {
 
 const handleDuplicateFields = (err) => {
   const statusCode = httpStatus.BAD_REQUEST;
-  // const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  const value = err.keyValue.name;
-  const message = `Duplicate field value: ${value}. Please use another value!`;
+  const value = err.message.match(/name:\s*"([^"]+)/)?.[1];
+  const message = `Duplicate field value: ${value}!. Please use another value!`;
 
   return new AppError(message, statusCode);
 };
 
-const handleErrorValidation = (err) => {
+const handleValidationErrorDB = (err) => {
   const statusCode = httpStatus.BAD_REQUEST;
-  const data = Object.entries(err.errors)[0];
-  const message = `Invalid ${data[0]}: ${data[1]}!`;
+  // eslint-disable-next-line arrow-body-style
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join('. ')}!`;
 
   return new AppError(message, statusCode);
 };
@@ -47,6 +47,7 @@ const sendErrorProd = (err, res) => {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
       status: 'error',
       message: 'Something went very wrong!',
+      err: err,
     });
   }
 };
@@ -54,23 +55,24 @@ const sendErrorProd = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
   err.statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
-  console.log(err);
 
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
+    error.name = err.name;
+    error.message = err.message;
 
     // handle error from mongoDB
     if (error.code === 11000) {
       error = handleDuplicateFields(error);
     }
 
-    if (error.errors) {
-      error = handleErrorValidation(error);
+    if (error.name === 'ValidationError') {
+      error = handleValidationErrorDB(error);
     }
 
-    if (!error.CastError && error.path) {
+    if (error.name === 'CastError') {
       error = handleCastErrorDB(error);
     }
 
