@@ -2,6 +2,13 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: `${__dirname}/config.env` });
 
+// CATCH UNCAUGHT EXCEPTION
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNCAUGHT EXCEPTION: Shutting down...');
+  process.exit(1);
+});
+
 const app = require('./app');
 const database = require('./config/database');
 
