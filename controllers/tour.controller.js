@@ -78,3 +78,15 @@ exports.getTourStats = catchAsync(async (req, res) => {
     },
   });
 });
+
+exports.getMonthlyPlan = catchAsync(async (req, res) => {
+  const plan = await tourServices.getMonthlyPlan(req.params.year * 1);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: plan.length,
+    data: {
+      plan: plan,
+    },
+  });
+});
