@@ -64,6 +64,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    passwordChangedAt: Date,
   },
   {
     toJSON: { virtuals: true },
@@ -93,6 +94,7 @@ userSchema.pre('save', async function (next) {
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
     user.passwordConfirm = undefined;
+    user.passwordChangedAt = Date.now() - 1000;
   }
   next();
 });
@@ -120,6 +122,24 @@ userSchema.methods.isCorrectPassword = async function (
   // Because password field is select by false
   // then this.password not effect
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+/**
+ * Check password changed after time point
+ * @param {string} JWTTimestamp
+ * @returns {boolean}
+ **/
+userSchema.methods.isChangedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means not changed
+  return false;
 };
 
 userSchema.pre('aggregate', function (next) {

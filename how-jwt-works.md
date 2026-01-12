@@ -8,8 +8,16 @@
   - **Signature**: được tạo ra bằng sự kết hợp bởi header, payload và một secret key.
 - Sau đó từ ba thành phần này cấu tạo thành JWT. Sau đó JWT được gửi tới client.
 
-## Verifying
+# Verifying
 
 - Sau khi client thực hiện request và gửi kèm JWT, sau đó server sẽ thực hiện xác minh bằng việc là lấy **header**, **payload** cùng với **secret key** được lưu trữ trên server tạo ra một **test signature** sau đó thực hiện compare với **signature** được tạo ra lần đầu.
 - Nếu như **test signature** trùng với **signature** đầu thì quá trình xác thực thành công.
 - Nếu như mà xác thực thất bại chứng tỏ rằng phần **header**, hoặc **payload** đã bị chỉnh sửa.
+
+# Protecting Routes
+
+- Quy trình gồm những bước như sau:
+  - 1. Kiểm tra xem có token được gửi kèm không.
+  - 2. Xác thực token.
+  - 3. Kiểm tra xem có tồn tại user đó không.
+  - 4. Nếu như user mới cập nhật mật khẩu cần check xem liệu token có tồn tài trước khi thay đổi không.

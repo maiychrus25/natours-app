@@ -2,28 +2,29 @@ const express = require('express');
 
 const router = express.Router();
 
-const tourControllers = require('../controllers/tour.controller');
-const tourMiddlewares = require('../middlewares/tour.middleware');
+const tourController = require('../controllers/tour.controller');
+const tourMiddleware = require('../middlewares/tour.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 // router.param('id', tourMiddlewares.checkID);
 
 router
   .route('/top-5-cheap')
-  .get(tourMiddlewares.aliasTopTours, tourControllers.getAllTour);
+  .get(tourMiddleware.aliasTopTours, tourController.getAllTour);
 
-router.route('/tour-stats').get(tourControllers.getTourStats);
+router.route('/tour-stats').get(tourController.getTourStats);
 
-router.route('/monthly-plan/:year').get(tourControllers.getMonthlyPlan);
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 
 router
   .route('/')
-  .get(tourControllers.getAllTour)
-  .post(tourControllers.createTour);
+  .get(authMiddleware.protect, tourController.getAllTour)
+  .post(tourController.createTour);
 
 router
   .route('/:id')
-  .get(tourControllers.getTour)
-  .patch(tourControllers.updateTour)
-  .delete(tourControllers.deleteTour);
+  .get(tourController.getTour)
+  .patch(tourController.updateTour)
+  .delete(tourController.deleteTour);
 
 module.exports = router;
