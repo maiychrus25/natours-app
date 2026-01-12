@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: 'A user must have a role!',
+      default: 'user',
     },
     active: {
       type: Boolean,
@@ -39,11 +40,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: 'Pleease provide a password!',
       minLength: 8,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now(),
-      select: false,
+      trim: true,
+      validate: {
+        // eslint-disable-next-line arrow-body-style
+        validator: (val) => val.match(/\d/) || !val.match(/[a-zA-Z]/),
+        message: 'Password must contain at least one letter and one number!',
+      },
     },
     slug: {
       type: String,
@@ -53,8 +55,20 @@ const userSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   },
 );
+
+/**
+ * Check if email is taken
+ * @param {string} email - The user's email
+ * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
+ * @returns {Promise <boolean>}
+ **/
+userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+  const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+  return !!user;
+};
 
 userSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true, replacement: '-' });
@@ -67,7 +81,7 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-userSchema.post('find', function (docs, next) {
+userSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} miliseconds!`);
   next();
 });
@@ -78,6 +92,9 @@ userSchema.pre('aggregate', function (next) {
   next();
 });
 
+/**
+ * @typedef User
+ **/
 const User = mongoose.model('User', userSchema, 'users');
 
 module.exports = User;
