@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: 'A user must have a name!',
-      unique: true,
+      required: 'Please tell us your name!',
       trim: true,
       minlength: [6, 'A user name must have more or equal then 6 characters!'],
       maxlength: [
@@ -16,7 +16,13 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: 'A tour must have a email!',
+      required: 'Please provide your email!',
+      unique: true,
+      lowercase: true,
+      validate: {
+        validator: validator.isEmail,
+        message: 'Please provide a valid email!',
+      },
     },
     role: {
       type: String,
@@ -31,7 +37,8 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: 'A user account must have a password!',
+      required: 'Pleease provide a password!',
+      minLength: 8,
     },
     createdAt: {
       type: Date,
