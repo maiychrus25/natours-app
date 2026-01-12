@@ -40,6 +40,11 @@ exports.getUser = async (userId) => {
   return user;
 };
 
+exports.getUserByEmail = async (email) => {
+  const user = await User.findOne({ email: email }).select('+password');
+  return user;
+};
+
 exports.createUser = async (data) => {
   const newUser = await User.create(data);
   return newUser;

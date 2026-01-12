@@ -1,16 +1,32 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-// const authService = require('../services/auth.service');
-// const tokenService = require('../services/token.service');
-const userService = require('../services/user.service');
+const AppError = require('../utils/appError');
+
+const authService = require('../services/auth.service');
+const tokenService = require('../services/token.service');
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await userService.createUser(req.body);
+  const newUser = await authService.handleSignUp(req.body);
+  // const url = `${req.protocol}://${req.get('host')}/me`;
+  tokenService.createSendToken(newUser, httpStatus.CREATED, req, res);
+});
 
-  res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      user: newUser,
-    },
-  });
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // 1) Check if email and password exist
+  if (!email || !password) {
+    return next(
+      new AppError(
+        'Please provide email and password!',
+        httpStatus.BAD_REQUEST,
+      ),
+    );
+  }
+
+  // 2) Check if user exists && password is correct
+  const user = await authService.loginUserWithEmailAndPassword(email, password);
+
+  // 3) If everything ok, send token to client
+  tokenService.createSendToken(user, httpStatus.OK, req, res);
 });

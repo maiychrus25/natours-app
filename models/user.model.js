@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema(
         validator: (val) => val.match(/\d/) || !val.match(/[a-zA-Z]/),
         message: 'Password must contain at least one letter and one number!',
       },
+      select: false,
     },
     passwordConfirm: {
       type: String,
@@ -106,6 +107,20 @@ userSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} miliseconds!`);
   next();
 });
+
+/**
+ * Check if password matches the user's password
+ * @param {string} password
+ * @returns {Promise<boolean>}
+ **/
+userSchema.methods.isCorrectPassword = async function (
+  userPassword,
+  candidatePassword,
+) {
+  // Because password field is select by false
+  // then this.password not effect
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 userSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { active: { $ne: false } } });
