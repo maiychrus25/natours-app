@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
@@ -47,6 +48,17 @@ const userSchema = new mongoose.Schema(
         message: 'Password must contain at least one letter and one number!',
       },
     },
+    passwordConfirm: {
+      type: String,
+      required: 'Please confirm your password!',
+      validate: {
+        // This only works on CREATE and SAVE method!!
+        validator: function (el) {
+          return this.password === el;
+        },
+        message: 'Passwords are not the same!',
+      },
+    },
     slug: {
       type: String,
       default: '',
@@ -72,6 +84,15 @@ userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
 
 userSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true, replacement: '-' });
+  next();
+});
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8);
+    user.passwordConfirm = undefined;
+  }
   next();
 });
 
