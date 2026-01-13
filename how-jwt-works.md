@@ -44,3 +44,5 @@ const cur = promisify(jwt.verify);
 
 const decoded = await cur(token, process.env.SECRET_KEY);
 ```
+
+- Quá trình **verify** sẽ thực hiện phân tích token được gửi lên kèm với **SECRET_KEY** xác thực xem có tồn tại không.
