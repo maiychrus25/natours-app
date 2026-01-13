@@ -51,10 +51,7 @@ exports.createUser = async (data) => {
 };
 
 exports.updateUser = async (userId, data) => {
-  const user = await User.findByIdAndUpdate(userId, data, {
-    new: true,
-    runValidators: true,
-  });
+  const user = await User.findOneAndUpdate({ _id: userId }, data);
   return user;
 };
 

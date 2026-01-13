@@ -99,6 +99,16 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+
+  if (update.password) {
+    update.password = await bcrypt.hash(update.password, 8);
+  }
+
+  next();
+});
+
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   this.start = Date.now();
