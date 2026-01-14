@@ -41,3 +41,9 @@ exports.createSendToken = (user, statusCode, req, res) => {
     },
   });
 };
+
+/**
+ * Generate reset password token
+ * @param {string} email
+ * @returns {Promise<string>}
+ **/

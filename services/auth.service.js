@@ -31,3 +31,25 @@ exports.loginUserWithEmailAndPassword = async (email, password) => {
   }
   return user;
 };
+
+/**
+ * Forgot password
+ * @param {string} email
+ * @return {Promise}
+ **/
+exports.forgotPassword = async (email) => {
+  // 1) Get user based on POSTed email
+  const user = await userService.getUserByEmail(email);
+  if (!user) {
+    throw new AppError(
+      'There is no user with email address!',
+      httpStatus.NOT_FOUND,
+    );
+  }
+
+  // 2) Generate the random reset password token
+  const resetPasswordToken = user.createResetPasswordToken();
+  await user.save({ validateBeforeSave: false });
+
+  // 3) Send it to user's email
+};

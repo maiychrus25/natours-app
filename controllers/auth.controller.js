@@ -30,3 +30,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // 3) If everything ok, send token to client
   tokenService.createSendToken(user, httpStatus.OK, req, res);
 });
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  const resetPasswordToken = await authService.forgotPassword(req.body.email);
+});
