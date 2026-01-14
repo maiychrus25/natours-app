@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const userService = require('./user.service');
+const sendEmail = require('../utils/mailtrap.js');
 
 /**
  * Create a user
@@ -37,7 +38,7 @@ exports.loginUserWithEmailAndPassword = async (email, password) => {
  * @param {string} email
  * @return {Promise}
  **/
-exports.forgotPassword = async (email) => {
+exports.forgotPassword = async (email, resetURL) => {
   // 1) Get user based on POSTed email
   const user = await userService.getUserByEmail(email);
   if (!user) {
@@ -52,4 +53,26 @@ exports.forgotPassword = async (email) => {
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
+  resetURL = resetURL.replace('<RESET_TOKEN>', resetPasswordToken);
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forgot your password, please ignore this email!`;
+
+  try {
+    await sendEmail({
+      email: email,
+      subject: 'Your password reset token (valid for 10 min)!',
+      message: message,
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    console.log(err);
+
+    throw new AppError(
+      'There was an error sending the email. Try again later!',
+      httpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+
+  return 'OK';
 };

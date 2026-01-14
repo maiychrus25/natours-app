@@ -32,5 +32,14 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  const resetPasswordToken = await authService.forgotPassword(req.body.email);
+  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/reset-password/<RESET_TOKEN>`;
+  const resetPasswordToken = await authService.forgotPassword(
+    req.body.email,
+    resetURL,
+  );
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    message: 'Token sent to email!',
+  });
 });
