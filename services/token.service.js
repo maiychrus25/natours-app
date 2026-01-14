@@ -41,12 +41,3 @@ exports.createSendToken = (user, statusCode, req, res) => {
     },
   });
 };
-
-/**
- * Verify token is correct
- * @param {string} token - token of user
- * @return {boolean}
- **/
-// exports.verifyToken = async (token) => {
-
-// }

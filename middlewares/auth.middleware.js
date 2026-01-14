@@ -5,8 +5,13 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-// const tokenService = require('../services/token.service');
 
+/**
+ * Protect routes is authentication token user is correct
+ * @param {Object} req - Express request
+ * param {Object} res - Express response
+ * return {null}
+ **/
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
@@ -44,7 +49,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 4) Check if user changed password after the token was issued
-  console.log(decoded);
   if (currentUser.isChangedPasswordAfter(decoded.iat)) {
     return next(
       new AppError(
@@ -54,9 +58,32 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  next();
-
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
   res.locals.user = currentUser;
+
+  next();
 });
+
+/**
+ * Handle check current user have permission
+ * @param {Array} roles - roles have permission
+ * @returns {Callback}
+ **/
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles ['admin', 'lead-guide'] -> currentUser.role = 'user' -> not permission
+    const userRole = req.user.role;
+
+    if (!roles.includes(userRole)) {
+      return next(
+        new AppError(
+          'You do not have permission to perform this action!',
+          httpStatus.FORBIDDEN,
+        ),
+      );
+    }
+
+    next();
+  };
+};
