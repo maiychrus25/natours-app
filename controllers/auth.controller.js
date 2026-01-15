@@ -44,7 +44,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   const user = await authService.resetPassword(
-    req.body.token,
+    req.params.token,
     req.body.password,
   );
   tokenService.createSendToken(user, httpStatus.OK, req, res);

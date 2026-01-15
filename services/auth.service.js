@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const httpStatus = require('http-status');
 
 const User = require('../models/user.model');
@@ -76,7 +77,10 @@ exports.forgotPassword = async (email, resetURL) => {
 
 exports.resetPassword = async (token, newPassword) => {
   // 1) Get user based on the token
-  const user = await userService.getUserByToken(token);
+  // Now we need hashed token in URL and compare with token hashed in database
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  const user = await userService.getUserByToken(hashedToken);
   if (!user) {
     throw new AppError('Not found user with that token!', httpStatus.NOT_FOUND);
   }
