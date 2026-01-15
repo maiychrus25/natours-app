@@ -87,7 +87,12 @@ exports.updateTour = async (tourId, data) => {
  **/
 
 exports.deleteTour = async (tourId) => {
-  return await Tour.findByIdAndDelete(tourId);
+  const tour = await Tour.findByIdAndUpdate(
+    tourId,
+    { active: false },
+    { new: true },
+  );
+  return tour;
 };
 
 exports.getTourStats = async () => {
