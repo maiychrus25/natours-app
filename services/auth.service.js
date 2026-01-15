@@ -4,6 +4,7 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const userService = require('./user.service');
+const tokenService = require('./token.service');
 const sendEmail = require('../utils/mailtrap');
 
 /**
@@ -78,26 +79,24 @@ exports.forgotPassword = async (email, resetURL) => {
 exports.resetPassword = async (token, newPassword) => {
   // 1) Get user based on the token
   // Now we need hashed token in URL and compare with token hashed in database
-  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+  const hashedToken = tokenService.createHashedToken(token);
 
   const user = await userService.getUserByToken(hashedToken);
   if (!user) {
-    throw new AppError('Not found user with that token!', httpStatus.NOT_FOUND);
-  }
-
-  const currentTimestamp = new Date().getTime();
-  const tokenTimestamp = new Date(user.passwordResetExpires).getTime();
-
-  if (currentTimestamp > tokenTimestamp) {
-    throw new AppError('Token has expired!', httpStatus.FORBIDDEN);
+    throw new AppError(
+      'Token is invalid or has expired!',
+      httpStatus.BAD_REQUEST,
+    );
   }
 
   // 2) If token has not expired and there is user, set set the new password
   user.password = newPassword;
-  await user.save({ validateBeforeSave: false });
+  user.passwordConfirm = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
 
-  // 3) Update changedpasswordAt property for the user
+  await user.save();
 
-  // 4) Log the user in, send JWT
+  // 3) Log the user in, send JWT
   return user;
 };

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 /**
  * Create a jwt token
@@ -36,14 +37,15 @@ exports.createSendToken = (user, statusCode, req, res) => {
   res.status(statusCode).json({
     status: 'success',
     token: token,
-    data: {
-      user: user,
-    },
   });
 };
 
 /**
- * Generate reset password token
- * @param {string} email
- * @returns {Promise<string>}
+ * Create hashed token by crypto
+ *  * @param {String} token
+ * @returns {String} hashed token
  **/
+exports.createHashedToken = (token) => {
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+  return hashedToken;
+};

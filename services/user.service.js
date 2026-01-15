@@ -41,15 +41,15 @@ exports.getUser = async (userId) => {
 };
 
 exports.getUserByEmail = async (email) => {
-  const user = await User.findOne({ email: email }).select('+password');
+  const user = await User.findOne({ email: email });
   return user;
 };
 
 exports.getUserByToken = async (token) => {
-  const user = await User.findOne({ passwordResetToken: token }).select(
-    '+password',
-  );
-  console.log(user);
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetExpires: { $gt: Date.now() },
+  }).select('+password');
   return user;
 };
 

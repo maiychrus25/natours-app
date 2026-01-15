@@ -98,8 +98,16 @@ userSchema.pre('save', async function(next) {
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
     user.passwordConfirm = undefined;
-    user.passwordChangedAt = Date.now() - 1000;
   }
+
+  next();
+});
+
+userSchema.pre('save', function(next) {
+  if (this.isModified('password') && this.isNew) {
+    this.passwordChangedAt = Date.now() - 1000;
+  }
+
   next();
 });
 
