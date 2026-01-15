@@ -76,6 +76,12 @@ exports.forgotPassword = async (email, resetURL) => {
   }
 };
 
+/**
+ * Rest Password
+ * @param {String} token
+ * @param {String} newPassword
+ * @returns {Object} Mongose document
+ **/
 exports.resetPassword = async (token, newPassword) => {
   // 1) Get user based on the token
   // Now we need hashed token in URL and compare with token hashed in database
@@ -98,5 +104,33 @@ exports.resetPassword = async (token, newPassword) => {
   await user.save();
 
   // 3) Log the user in, send JWT
+  return user;
+};
+
+/**
+ * Update password
+ * @param {ObjectId} userId
+ * @param {String} password - current user password
+ * @param {String} new password - new password need update
+ * @returns {Object} Mongose document
+ **/
+exports.updatePasword = async (userId, currentPassword, newPassword) => {
+  // 1) Get user from collection
+  const user = await userService.getUser(userId);
+
+  if (!user) {
+    throw new AppError('No user found with that ID!', httpStatus.NOT_FOUND);
+  }
+
+  // 2) Check if POSTed current password is correct
+  if (!user.isCorrectPassword(currentPassword, newPassword)) {
+    throw new AppError('Incorrect password!', httpStatus.BAD_REQUEST);
+  }
+
+  // 3) If so, update password
+  user.password = newPassword;
+  user.passwordConfirm = newPassword;
+  await user.save();
+
   return user;
 };

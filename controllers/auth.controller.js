@@ -49,3 +49,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   );
   tokenService.createSendToken(user, httpStatus.OK, req, res);
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const user = await authService.updatePasword(
+    req.user.id,
+    req.body.password,
+    req.body.newPassword,
+  );
+  tokenService.createSendToken(user, httpStatus.OK, req, res);
+});
