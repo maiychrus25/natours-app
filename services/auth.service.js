@@ -3,7 +3,7 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const userService = require('./user.service');
-const sendEmail = require('../utils/mailtrap.js');
+const sendEmail = require('../utils/mailtrap');
 
 /**
  * Create a user
@@ -66,13 +66,34 @@ exports.forgotPassword = async (email, resetURL) => {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
-    console.log(err);
 
     throw new AppError(
       'There was an error sending the email. Try again later!',
       httpStatus.INTERNAL_SERVER_ERROR,
     );
   }
+};
 
-  return 'OK';
+exports.resetPassword = async (token, newPassword) => {
+  // 1) Get user based on the token
+  const user = await userService.getUserByToken(token);
+  if (!user) {
+    throw new AppError('Not found user with that token!', httpStatus.NOT_FOUND);
+  }
+
+  const currentTimestamp = new Date().getTime();
+  const tokenTimestamp = new Date(user.passwordResetExpires).getTime();
+
+  if (currentTimestamp > tokenTimestamp) {
+    throw new AppError('Token has expired!', httpStatus.FORBIDDEN);
+  }
+
+  // 2) If token has not expired and there is user, set set the new password
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  // 3) Update changedpasswordAt property for the user
+
+  // 4) Log the user in, send JWT
+  return user;
 };

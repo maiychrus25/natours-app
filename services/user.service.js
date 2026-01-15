@@ -45,6 +45,14 @@ exports.getUserByEmail = async (email) => {
   return user;
 };
 
+exports.getUserByToken = async (token) => {
+  const user = await User.findOne({ passwordResetToken: token }).select(
+    '+password',
+  );
+  console.log(user);
+  return user;
+};
+
 exports.createUser = async (data) => {
   const newUser = await User.create(data);
   return newUser;

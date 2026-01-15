@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
       required: 'Please confirm your password!',
       validate: {
         // This only works on CREATE and SAVE method!!
-        validator: function (el) {
+        validator: function(el) {
           return this.password === el;
         },
         message: 'Passwords are not the same!',
@@ -83,17 +83,17 @@ const userSchema = new mongoose.Schema(
  * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
  * @returns {Promise <boolean>}
  **/
-userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+userSchema.statics.isEmailTaken = async function(email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 };
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true, replacement: '-' });
   next();
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
   const user = this;
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
@@ -103,7 +103,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.pre('findOneAndUpdate', async function (next) {
+userSchema.pre('findOneAndUpdate', async function(next) {
   const update = this.getUpdate();
 
   if (update.password) {
@@ -113,13 +113,13 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   next();
 });
 
-userSchema.pre(/^find/, function (next) {
+userSchema.pre(/^find/, function(next) {
   this.find({ active: { $ne: false } });
   this.start = Date.now();
   next();
 });
 
-userSchema.post(/^find/, function (docs, next) {
+userSchema.post(/^find/, function(docs, next) {
   console.log(`Query took ${Date.now() - this.start} miliseconds!`);
   next();
 });
@@ -129,7 +129,7 @@ userSchema.post(/^find/, function (docs, next) {
  * @param {string} password
  * @returns {Promise<boolean>}
  **/
-userSchema.methods.isCorrectPassword = async function (
+userSchema.methods.isCorrectPassword = async function(
   userPassword,
   candidatePassword,
 ) {
@@ -143,7 +143,7 @@ userSchema.methods.isCorrectPassword = async function (
  * @param {string} JWTTimestamp
  * @returns {boolean}
  **/
-userSchema.methods.isChangedPasswordAfter = function (JWTTimestamp) {
+userSchema.methods.isChangedPasswordAfter = function(JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
@@ -160,7 +160,7 @@ userSchema.methods.isChangedPasswordAfter = function (JWTTimestamp) {
  * Create reset password token
  * @returns {string} reset password token
  **/
-userSchema.methods.createResetPasswordToken = function () {
+userSchema.methods.createResetPasswordToken = function() {
   const resetPasswordToken = crypto.randomBytes(32).toString('hex');
 
   this.passwordResetToken = crypto
@@ -178,7 +178,7 @@ userSchema.methods.createResetPasswordToken = function () {
   return resetPasswordToken;
 };
 
-userSchema.pre('aggregate', function (next) {
+userSchema.pre('aggregate', function(next) {
   this.pipeline().unshift({ $match: { active: { $ne: false } } });
   console.log(this.pipeline());
   next();
