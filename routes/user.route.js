@@ -21,6 +21,13 @@ router
   .get(userController.getAllUser)
   .post(userController.createUser);
 
+// route for personal user
+router.patch(
+  '/update-me-info',
+  authMiddleware.protect,
+  userController.updateMeInfo,
+);
+
 router
   .route('/:id')
   .get(userController.getUser)

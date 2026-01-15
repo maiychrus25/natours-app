@@ -1,10 +1,10 @@
 const httpStatus = require('http-status');
-const userServices = require('../services/user.service');
+const userService = require('../services/user.service');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
-  const users = await userServices.getAllUser(req.query);
+  const users = await userService.getAllUser(req.query);
 
   res.status(httpStatus.OK).json({
     status: 'success',
@@ -16,7 +16,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await userServices.getUser(req.params.id);
+  const user = await userService.getUser(req.params.id);
 
   if (!user) {
     return next(
@@ -33,7 +33,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.createUser = catchAsync(async (req, res, next) => {
-  const newUser = await userServices.createUser(req.body);
+  const newUser = await userService.createUser(req.body);
 
   res.status(httpStatus.CREATED).json({
     status: 'success',
@@ -44,7 +44,7 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  const user = await userServices.updateUser(req.params.id, req.body);
+  const user = await userService.updateUser(req.params.id, req.body);
 
   if (!user) {
     return next(new AppError('No user found to update!', httpStatus.NOT_FOUND));
@@ -58,8 +58,19 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateMeInfo = catchAsync(async (req, res, next) => {
+  const user = await userService.updateMeInfo(req.user.id, req.body);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    data: {
+      user: user,
+    },
+  });
+});
+
 exports.deleteUser = catchAsync(async (req, res, next) => {
-  const tour = await userServices.deleteUser(req.params.id);
+  const tour = await userService.deleteUser(req.params.id);
 
   if (!tour) {
     return next(new AppError('No user with that ID!', 404));

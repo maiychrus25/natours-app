@@ -1,5 +1,18 @@
+const httpStatus = require('http-status');
+
 const User = require('../models/user.model');
+const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
+
+const filterObj = (obj, ...allowedFields) => {
+  return Object.keys(obj).reduce((acc, cur) => {
+    if (allowedFields.includes(cur)) {
+      acc[cur] = obj[cur];
+    }
+
+    return acc;
+  }, {});
+};
 
 exports.getAllUser = async (queryString) => {
   // 1) Count total documents matching filter
@@ -59,8 +72,32 @@ exports.createUser = async (data) => {
 };
 
 exports.updateUser = async (userId, data) => {
-  const user = await User.findOneAndUpdate({ _id: userId }, data);
+  const user = await User.findByIdAndUpdate(userId, data);
   return user;
+};
+
+/**
+ * Update a current user info
+ * @param {String} email or Name
+ * @return {Object} document
+ **/
+exports.updateMeInfo = async (userId, data) => {
+  // 1) Create error if user POSTs password data
+  if (data.password || data.passwordConfirm) {
+    throw new AppError(
+      'This route is not for password updates. Please use /update-password!',
+      httpStatus.BAD_REQUEST,
+    );
+  }
+
+  // 2) Update user document
+  const filteredData = filterObj(data, 'name', 'email');
+
+  const updatedUser = await User.findByIdAndUpdate(userId, filteredData, {
+    new: true,
+    runValidators: true,
+  });
+  return updatedUser;
 };
 
 exports.deleteUser = async (userId) => {
