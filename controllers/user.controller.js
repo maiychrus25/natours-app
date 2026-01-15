@@ -82,3 +82,14 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  const user = await userService.deleteUser(req.user.id);
+  console.log(user);
+
+  res.status(httpStatus.NO_CONTENT).json({
+    status: 'success',
+    message: 'Deleted a user successfully!',
+    data: null,
+  });
+});

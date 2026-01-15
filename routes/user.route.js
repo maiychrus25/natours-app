@@ -28,6 +28,8 @@ router.patch(
   userController.updateMeInfo,
 );
 
+router.delete('/delete-me', authMiddleware.protect, userController.deleteMe);
+
 router
   .route('/:id')
   .get(userController.getUser)

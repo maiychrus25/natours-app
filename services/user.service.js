@@ -101,5 +101,10 @@ exports.updateMeInfo = async (userId, data) => {
 };
 
 exports.deleteUser = async (userId) => {
-  return await User.findByIdAndDelete(userId);
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { active: false },
+    { new: true },
+  );
+  return user;
 };
