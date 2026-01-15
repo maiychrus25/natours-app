@@ -138,8 +138,8 @@ userSchema.post(/^find/, function(docs, next) {
  * @returns {Promise<boolean>}
  **/
 userSchema.methods.isCorrectPassword = async function(
-  userPassword,
   candidatePassword,
+  userPassword,
 ) {
   // Because password field is select by false
   // then this.password not effect

@@ -41,7 +41,7 @@ exports.getUser = async (userId) => {
 };
 
 exports.getUserByEmail = async (email) => {
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: email }).select('+password');
   return user;
 };
 

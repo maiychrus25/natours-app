@@ -29,7 +29,7 @@ exports.handleSignUp = async (data) => {
  **/
 exports.loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email);
-  if (!user || !(await user.isCorrectPassword(user.password, password))) {
+  if (!user || !(await user.isCorrectPassword(password, user.password))) {
     throw new AppError('Incorrect email or password!', httpStatus.UNAUTHORIZED);
   }
   return user;
@@ -114,22 +114,29 @@ exports.resetPassword = async (token, newPassword) => {
  * @param {String} new password - new password need update
  * @returns {Object} Mongose document
  **/
-exports.updatePasword = async (userId, currentPassword, newPassword) => {
+exports.updatePasword = async (
+  email,
+  currentPassword,
+  newPassword,
+  newPasswordConfirm,
+) => {
   // 1) Get user from collection
-  const user = await userService.getUser(userId);
-
+  const user = await userService.getUserByEmail(email);
   if (!user) {
     throw new AppError('No user found with that ID!', httpStatus.NOT_FOUND);
   }
 
   // 2) Check if POSTed current password is correct
-  if (!user.isCorrectPassword(currentPassword, newPassword)) {
-    throw new AppError('Incorrect password!', httpStatus.BAD_REQUEST);
+  if (!(await user.isCorrectPassword(currentPassword, user.password))) {
+    throw new AppError(
+      'Your current password password is wrong!',
+      httpStatus.UNAUTHORIZED,
+    );
   }
 
   // 3) If so, update password
   user.password = newPassword;
-  user.passwordConfirm = newPassword;
+  user.passwordConfirm = newPasswordConfirm;
   await user.save();
 
   return user;
