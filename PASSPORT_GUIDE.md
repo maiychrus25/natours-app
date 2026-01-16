@@ -1,4 +1,3 @@
-i:::;:# Hướng Dẫn Toàn Tập: Passport.js cho Backend Developer
 
 ## 1. Passport.js là gì?
 
