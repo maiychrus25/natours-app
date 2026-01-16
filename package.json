@@ -15,6 +15,7 @@
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.2",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.2.1",
     "http-status": "1.4.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.18.3",

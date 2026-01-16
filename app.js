@@ -3,11 +3,18 @@ const express = require('express');
 const morgan = require('morgan');
 const passport = require('passport');
 const jwtStrategy = require('./config/passport');
+const { globalLimiter } = require('./middlewares/rateLimiter.middleware');
 
 const AppError = require('./utils/appError');
 const globalErrorHandle = require('./services/error.service');
 
 const app = express();
+
+// 1) Cau hinh trust proxy (rat qun trong khi deploy len heroku, vercel, AWS, ...)
+// Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user 
+app.set('trust proxy', 1);
+
+app.use('/api', globalLimiter);
 
 app.use(express.json());
 
