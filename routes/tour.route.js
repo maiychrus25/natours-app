@@ -10,44 +10,29 @@ const authMiddleware = require('../middlewares/auth.middleware');
 
 router
   .route('/top-5-cheap')
-  .get(
-    authMiddleware.protect,
-    tourMiddleware.aliasTopTours,
-    tourController.getAllTour,
-  );
+  .get(tourMiddleware.aliasTopTours, tourController.getAllTour);
 
-router
-  .route('/tour-stats')
-  .get(authMiddleware.protect, tourController.getTourStats);
+router.route('/tour-stats').get(tourController.getTourStats);
 
 router
   .route('/monthly-plan/:year')
   .get(
-    authMiddleware.protect,
-    authMiddleware.restrictTo('guide', 'lead-guide', 'admin'),
+    authMiddleware.auth('guide', 'lead-guide', 'admin'),
     tourController.getMonthlyPlan,
   );
 
-router
-  .route('/')
-  .get(authMiddleware.protect, tourController.getAllTour)
-  .post(
-    authMiddleware.protect,
-    authMiddleware.restrictTo('lead-guide', 'admin'),
-    tourController.createTour,
-  );
+router.route('/').get(authMiddleware.auth(), tourController.getAllTour).post(
+  authMiddleware.auth('lead-guide', 'admin'),
+  // authMiddleware.restrictTo('lead-guide', 'admin'),
+  tourController.createTour,
+);
 
 router
   .route('/:id')
-  .get(authMiddleware.protect, tourController.getTour)
-  .patch(
-    authMiddleware.protect,
-    authMiddleware.restrictTo('lead-guide', 'admin'),
-    tourController.updateTour,
-  )
+  .get(tourController.getTour)
+  .patch(authMiddleware.auth('lead-guide', 'admin'), tourController.updateTour)
   .delete(
-    authMiddleware.protect,
-    authMiddleware.restrictTo('admin', 'lead-guidle'),
+    authMiddleware.auth('lead-guide', 'admin'),
     tourController.deleteTour,
   );
 

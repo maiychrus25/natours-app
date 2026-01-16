@@ -1,6 +1,8 @@
 const httpStatus = require('http-status');
 const express = require('express');
 const morgan = require('morgan');
+const passport = require('passport');
+const jwtStrategy = require('./config/passport');
 
 const AppError = require('./utils/appError');
 const globalErrorHandle = require('./services/error.service');
@@ -12,6 +14,10 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// JWT authentication
+app.use(passport.initialize());
+passport.use('jwt', jwtStrategy);
 
 // Routers
 const tourRoutes = require('./routes/tour.route');
