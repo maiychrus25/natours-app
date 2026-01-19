@@ -134,13 +134,9 @@ tourSchema.virtual('weeklyDuration').get(function() {
 
 // DOCUMENT MIDDLEWARE: run before save() and create()
 tourSchema.pre('save', async function(next) {
-  const users = [];
-  for (let i = 0; i < this.guides.length; ++i) {
-    const user = await User.findById(this.guides[i]);
-    users.push(user);
-  }
+  const guidesPromises = this.guides.map(async (userId) => await User.findById(userId))
+  this.guides = await Promise.all(guidesPromises);
 
-  this.guides = users;
   this.slug = slugify(this.name, { lower: true, replacement: '-' });
   next();
 });
