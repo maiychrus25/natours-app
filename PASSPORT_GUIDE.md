@@ -1,4 +1,3 @@
-
 ## 1. Passport.js là gì?
 
 **Passport** là một Middleware xác thực (Authentication) dành cho Node.js.
