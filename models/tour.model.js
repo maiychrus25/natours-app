@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const User = require('./user.model')
 
 const tourSchema = new mongoose.Schema(
   {
@@ -155,6 +156,7 @@ tourSchema.pre('save', function(next) {
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function(next) {
   this.find({ secretTour: { $ne: true } });
+  this.populate({ path: 'guides', select: '-__v -passwordChangedAt' })
   this.start = Date.now();
   next();
 });
