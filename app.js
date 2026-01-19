@@ -15,6 +15,7 @@ const globalErrorHandle = require('./services/error.service');
 
 const tourRoutes = require('./routes/tour.route');
 const userRoutes = require('./routes/user.route');
+const reviewRoutes = require('./routes/review.route');
 
 const app = express();
 
@@ -78,6 +79,7 @@ passport.use('jwt', jwtStrategy);
 // Routers
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 // ============================
 // 4. ERROR HANDLING          =
