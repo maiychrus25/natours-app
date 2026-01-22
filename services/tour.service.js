@@ -52,7 +52,7 @@ exports.getAllTour = async (queryString) => {
 
 exports.getTour = async (tourId) => {
   // return Tour.findOne({ _id: tourId });
-  return Tour.findById(tourId);
+  return Tour.findById(tourId).populate('reviews');
 };
 
 /**
