@@ -36,4 +36,13 @@ router
     tourController.deleteTour,
   );
 
+// Nested Router Review
+router.route('/:tourId/reviews/:reviewId')
+  .get(authMiddleware.auth(), tourController.getReview)
+
+router.route('/:tourId/reviews')
+  .get(authMiddleware.auth(), tourController.getReviews)
+  .post(authMiddleware.auth(), tourController.createReview)
+
+
 module.exports = router;

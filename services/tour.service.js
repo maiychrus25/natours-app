@@ -1,4 +1,5 @@
 const Tour = require('../models/tour.model');
+const Review = require('../models/review.model');
 const APIFeatures = require('../utils/APIFeatures');
 
 /**
@@ -176,3 +177,32 @@ exports.getMonthlyPlan = async (year) => {
 
   return plan;
 };
+
+
+// HANDLE REVIEWS 
+exports.getReviews = async (userId, tourId) => {
+  if (!userId || !tourId) {
+    throw new AppError('User ID and Tour Id are required to retrieve reviews!', httpStatus.BAD_REQUEST); 
+  }
+
+  const reviews = await Review.find({ tour: tourId, user: userId });
+  return reviews;
+}
+
+exports.getReview = async (userId, tourId, reviewId) => {
+  if (!userId || !tourId || !reviewId) {
+    throw new AppError('User ID, Tour ID, and Review ID are required to retrieve a review!', httpStatus.BAD_REQUEST);
+  }
+
+  const review = await Review.findOne({ tour: tourId, user: userId, _id: reviewId });
+  if (!review) {
+    throw new AppError('Review does not exist!', httpStatus.NOT_FOUND);
+  }
+
+  return review;
+}
+
+exports.createReview = async (data) => {
+  const newReview = await Review.create(data);
+  return newReview;
+}
