@@ -2,11 +2,14 @@ const express = require('express');
 
 const router = express.Router();
 
+const reviewRouter = require('./review.route');
 const tourController = require('../controllers/tour.controller');
 const tourMiddleware = require('../middlewares/tour.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 // router.param('id', tourMiddlewares.checkID);
+
+router.use('/:tourId/reviews', reviewRouter);
 
 router
   .route('/top-5-cheap')
@@ -36,13 +39,13 @@ router
     tourController.deleteTour,
   );
 
-// Nested Router Review
-router.route('/:tourId/reviews/:reviewId')
-  .get(authMiddleware.auth(), tourController.getReview)
-
-router.route('/:tourId/reviews')
-  .get(authMiddleware.auth(), tourController.getReviews)
-  .post(authMiddleware.auth(), tourController.createReview)
-
+// Nested Router Review --> Simple for Reference
+// router.route('/:tourId/reviews/:reviewId')
+//   .get(authMiddleware.auth(), tourController.getReview)
+//
+// router.route('/:tourId/reviews')
+//   .get(authMiddleware.auth(), tourController.getReviews)
+//   .post(authMiddleware.auth(), tourController.createReview)
+//
 
 module.exports = router;
