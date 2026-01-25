@@ -1,41 +1,7 @@
 const httpStatus = require('http-status');
+const catchAsync = require('../utils/catchAsync');
 const handlerFactory = require('./handlerFactory.controller');
 const userService = require('../services/user.service');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
-
-exports.getAllUser = catchAsync(async (req, res, next) => {
-  const users = await userService.getAllUser(req.query);
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users: users,
-    },
-  });
-});
-
-exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await userService.getUser(req.params.id);
-
-  if (!user) {
-    return next(
-      new AppError('No user found with that ID!', httpStatus.NOT_FOUND),
-    );
-  }
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      user: user,
-    },
-  });
-});
-
-exports.createUser = handlerFactory.createOne(userService.createUser); 
-
-exports.updateUser = handlerFactory.updateOne(userService.updateUser); 
 
 exports.updateMeInfo = catchAsync(async (req, res, next) => {
   const user = await userService.updateMeInfo(req.user.id, req.body);
@@ -47,6 +13,15 @@ exports.updateMeInfo = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+
+exports.getAllUser = handlerFactory.getAll(userService.getUsers);
+
+exports.getUser = handlerFactory.getOne(userService.getUser); 
+
+exports.createUser = handlerFactory.createOne(userService.createUser); 
+
+exports.updateUser = handlerFactory.updateOne(userService.updateUser); 
 
 exports.deleteUser = handlerFactory.deleteOne(userService.deleteUser); 
 

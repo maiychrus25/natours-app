@@ -1,6 +1,5 @@
 const Tour = require('../models/tour.model');
 const Review = require('../models/review.model');
-const APIFeatures = require('../utils/APIFeatures');
 const baseService = require('./base.service');
 
 /**
@@ -12,50 +11,14 @@ const baseService = require('./base.service');
  * @param {number} [options.page] - Current page (default = 1)
  * @returns {QueryResult}
  **/
-
-exports.getAllTour = async (queryString) => {
-  // 1) Count total documents matching filter
-  const filterObj = { ...queryString };
-  const excludedFields = ['limit', 'page', 'sort', 'fields'];
-
-  // eslint-disable-next-line arrow-body-style
-  excludedFields.forEach((el) => delete filterObj[el]);
-
-  let filterStr = JSON.stringify(filterObj);
-  // eslint-disable-next-line arrow-body-style
-  filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/, (match) => `$${match}`);
-
-  const totalDocs = await Tour.countDocuments(JSON.parse(filterStr));
-
-  // 2) Apply features
-  const features = new APIFeatures(
-    Tour.find(JSON.parse(filterStr)),
-    queryString,
-  );
-  const tours = await features.limitFields().sort().paginate().query;
-
-  // 3) Pagination check
-  const limit = queryString.limit * 1 || 5;
-  const page = queryString.page * 1 || 1;
-
-  const totalPages = Math.ceil(totalDocs / limit);
-  if (page > totalPages && totalDocs > 0) {
-    throw new Error('This page does not exist!');
-  }
-
-  return tours || [];
-};
+exports.getTours = baseService.getAll(Tour); 
 
 /**
  * Get tour by id
  * @param {ObjectId} id
  * @returns {Tour}
  **/
-
-exports.getTour = async (tourId) => {
-  // return Tour.findOne({ _id: tourId });
-  return Tour.findById(tourId).populate('reviews');
-};
+exports.getTour = baseService.getOne(Tour, { path: 'reviews', select: '-__v' });
 
 /**
  * Create a tour

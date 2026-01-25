@@ -1,24 +1,8 @@
-const httpStatus = require('http-status');
 const Review = require('../models/review.model');
-const AppError = require('../utils/appError');
 const baseService = require('./base.service');
 
-exports.getReviews = async (filter) => {
-  const reviews = await Review.find(filter); 
-  return reviews;
-}
-
-exports.getReview = async (userId, tourId, reviewId) => {
-  const review = await Review.findOne({ user: userId, tour: tourId, _id: reviewId })
-  if (!review) {
-    throw new AppError('Can not find review with that ID!', httpStatus.NOT_FOUND);
-  }
-
-  return review;
-}
-
+exports.getReviews = baseService.getAll(Review); 
+exports.getReview = baseService.getOne(Review);
 exports.createReview = baseService.createOne(Review); 
-
 exports.updateReview = baseService.updateOne(Review);
-
 exports.deleteReview = baseService.deleteById(Review);
