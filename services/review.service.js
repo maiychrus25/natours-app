@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const Review = require('../models/review.model');
 const AppError = require('../utils/appError');
+const baseService = require('./base.service');
 
 exports.getReviews = async (filter) => {
   const reviews = await Review.find(filter); 
@@ -20,3 +21,5 @@ exports.createReview = async (data) => {
   const newReview = await Review.create(data);
   return newReview;
 }
+
+exports.deleteReview = baseService.deleteById(Review);

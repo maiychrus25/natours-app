@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/APIFeatures');
+const baseService = require('./base.service');
 
 const filterObj = (obj, ...allowedFields) => {
   return Object.keys(obj).reduce((acc, cur) => {
@@ -100,7 +101,7 @@ exports.updateMeInfo = async (userId, data) => {
   return updatedUser;
 };
 
-exports.deleteUser = async (userId) => {
+exports.deleteMe = async (userId) => {
   const user = await User.findByIdAndUpdate(
     userId,
     { active: false },
@@ -108,3 +109,5 @@ exports.deleteUser = async (userId) => {
   );
   return user;
 };
+
+exports.deleteUser = baseService.deleteById(User);

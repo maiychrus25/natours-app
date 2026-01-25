@@ -1,6 +1,7 @@
 const Tour = require('../models/tour.model');
 const Review = require('../models/review.model');
 const APIFeatures = require('../utils/APIFeatures');
+const baseService = require('./base.service');
 
 /**
  * Query for tours
@@ -86,15 +87,7 @@ exports.updateTour = async (tourId, data) => {
  * @param {ObjectId} tourId
  * @returns {null}
  **/
-
-exports.deleteTour = async (tourId) => {
-  const tour = await Tour.findByIdAndUpdate(
-    tourId,
-    { active: false },
-    { new: true },
-  );
-  return tour;
-};
+exports.deleteTour = baseService.deleteById(Tour); 
 
 exports.getTourStats = async () => {
   const stats = await Tour.aggregate([

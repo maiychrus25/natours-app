@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const handlerFactory = require('./handlerFactory.controller');
 const userService = require('../services/user.service');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -69,27 +70,6 @@ exports.updateMeInfo = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteUser = catchAsync(async (req, res, next) => {
-  const tour = await userService.deleteUser(req.params.id);
+exports.deleteUser = handlerFactory.deleteOne(userService.deleteUser); 
 
-  if (!tour) {
-    return next(new AppError('No user with that ID!', 404));
-  }
-
-  res.status(httpStatus.NO_CONTENT).json({
-    status: 'success',
-    message: 'Deleted a user successfully!',
-    data: null,
-  });
-});
-
-exports.deleteMe = catchAsync(async (req, res, next) => {
-  const user = await userService.deleteUser(req.user.id);
-  console.log(user);
-
-  res.status(httpStatus.NO_CONTENT).json({
-    status: 'success',
-    message: 'Deleted a user successfully!',
-    data: null,
-  });
-});
+exports.deleteMe = handlerFactory.deleteOne(userService.deleteMe); 

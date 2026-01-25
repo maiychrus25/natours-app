@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const reviewService = require('../services/review.service');
+const handlerFactory = require('./handlerFactory.controller');
 
 exports.getReviews = catchAsync(async (req, res, next) => {
   const filter = {};
@@ -49,3 +50,5 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+exports.deleteReview = handlerFactory.deleteOne(reviewService.deleteReview); 
