@@ -3,7 +3,9 @@ const catchAsync = require('../utils/catchAsync');
 const reviewService = require('../services/review.service');
 
 exports.getReviews = catchAsync(async (req, res, next) => {
-  const reviews = await reviewService.getReviews(req.user.id, req.params.tourId);
+  const filter = {};
+  if (req.params.tourId) filter.tour = req.params.tourId;
+  const reviews = await reviewService.getReviews(filter);
 
   res.status(httpStatus.OK).json({
     status: 'success',

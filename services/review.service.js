@@ -2,8 +2,8 @@ const httpStatus = require('http-status');
 const Review = require('../models/review.model');
 const AppError = require('../utils/appError');
 
-exports.getReviews = async (tourId, userId) => {
-  const reviews = await Review.find({ user: userId, tour: tourId }); 
+exports.getReviews = async (filter) => {
+  const reviews = await Review.find(filter); 
   return reviews;
 }
 
