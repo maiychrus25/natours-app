@@ -27,3 +27,29 @@ exports.deleteOne = serviceFn => {
     })
   })
 }
+
+exports.createOne = serviceFn => {
+  return catchAsync(async (req, res, next) => {
+    const doc = await serviceFn(req.body);
+
+    res.status(httpStatus.CREATED).json({
+      status: 'success',
+      data: {
+        doc: doc,
+      }
+    })
+  })
+}
+
+exports.updateOne = serviceFn => {
+  return catchAsync (async (req, res, next) => {
+    const doc = await serviceFn(req.params.id, req.body);
+
+    res.status(httpStatus.OK).json({
+      status: 'success',
+      data: {
+        doc: doc 
+      }
+    })
+  })
+}

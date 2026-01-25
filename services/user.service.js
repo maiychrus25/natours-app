@@ -67,15 +67,9 @@ exports.getUserByToken = async (token) => {
   return user;
 };
 
-exports.createUser = async (data) => {
-  const newUser = await User.create(data);
-  return newUser;
-};
+exports.createUser = baseService.createOne(User); 
 
-exports.updateUser = async (userId, data) => {
-  const user = await User.findByIdAndUpdate(userId, data);
-  return user;
-};
+exports.updateUser = baseService.updateOne(User); 
 
 /**
  * Update a current user info

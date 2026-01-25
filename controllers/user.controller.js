@@ -33,31 +33,9 @@ exports.getUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createUser = catchAsync(async (req, res, next) => {
-  const newUser = await userService.createUser(req.body);
+exports.createUser = handlerFactory.createOne(userService.createUser); 
 
-  res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      user: newUser,
-    },
-  });
-});
-
-exports.updateUser = catchAsync(async (req, res, next) => {
-  const user = await userService.updateUser(req.params.id, req.body);
-
-  if (!user) {
-    return next(new AppError('No user found to update!', httpStatus.NOT_FOUND));
-  }
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      user: user,
-    },
-  });
-});
+exports.updateUser = handlerFactory.updateOne(userService.updateUser); 
 
 exports.updateMeInfo = catchAsync(async (req, res, next) => {
   const user = await userService.updateMeInfo(req.user.id, req.body);

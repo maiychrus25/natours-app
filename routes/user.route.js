@@ -23,6 +23,15 @@ router.patch(
 );
 
 router
+  .route('/:id')
+  .get(
+    authMiddleware.auth('guide', 'lead-guide', 'admin'),
+    userController.getUser,
+  )
+  .patch(authMiddleware.auth('admin'), userController.updateUser)
+  .delete(authMiddleware.auth('admin'), userController.deleteUser);
+
+router
   .route('/')
   .get(
     authMiddleware.auth('admin', 'lead-guide', 'guide'),
@@ -39,14 +48,5 @@ router.patch(
 );
 
 router.delete('/delete-me', authMiddleware.auth(), userController.deleteMe);
-
-router
-  .route('/:id')
-  .get(
-    authMiddleware.auth('guide', 'lead-guide', 'admin'),
-    userController.getUser,
-  )
-  .patch(authMiddleware.auth('admin'), userController.updateUser)
-  .delete(authMiddleware.auth('admin'), userController.deleteUser);
 
 module.exports = router;

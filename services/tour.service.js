@@ -62,10 +62,7 @@ exports.getTour = async (tourId) => {
  * @param {Object} tourBody
  * @returns {Tour}
  **/
-
-exports.createTour = async (data) => {
-  return await Tour.create(data);
-};
+exports.createTour = baseService.createOne(Tour); 
 
 /**
  * Update tour by id
@@ -74,13 +71,7 @@ exports.createTour = async (data) => {
  * @returns {updateTour}
  **/
 
-exports.updateTour = async (tourId, data) => {
-  // return await Tour.updateOne({ _id: tourId }, data)
-  return await Tour.findByIdAndUpdate(tourId, data, {
-    new: true,
-    runValidators: true,
-  });
-};
+exports.updateTour = baseService.updateOne(Tour);
 
 /**
  * Delete tour by id

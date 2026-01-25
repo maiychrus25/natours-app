@@ -33,31 +33,9 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createTour = catchAsync(async (req, res) => {
-  const tour = await tourService.createTour(req.body);
+exports.createTour = handlerFactory.createOne(tourService.createTour); 
 
-  res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await tourService.updateTour(req.params.id, req.body);
-
-  if (!tour) {
-    return next(new AppError('No tour found to update!', httpStatus.NOT_FOUND));
-  }
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
+exports.updateTour = handlerFactory.updateOne(tourService.updateTour); 
 
 exports.deleteTour = handlerFactory.deleteOne(tourService.deleteTour); 
 

@@ -17,9 +17,8 @@ exports.getReview = async (userId, tourId, reviewId) => {
   return review;
 }
 
-exports.createReview = async (data) => {
-  const newReview = await Review.create(data);
-  return newReview;
-}
+exports.createReview = baseService.createOne(Review); 
+
+exports.updateReview = baseService.updateOne(Review);
 
 exports.deleteReview = baseService.deleteById(Review);

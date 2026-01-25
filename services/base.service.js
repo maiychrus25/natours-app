@@ -12,3 +12,22 @@ exports.deleteById = Model => {
     return doc;
   }
 }
+
+exports.createOne = Model => {
+  return async (data) => {
+    const doc = await Model.create(data);
+    return doc;
+  }
+}
+
+exports.updateOne = Model => {
+  return async (docId, data) => {
+    const updateDoc = await Model.findByIdAndUpdate(docId, data, { new: true, runValidators: true });
+
+    if (!updateDoc) {
+      throw new AppError('No document found to update!', httpStatus.NOT_FOUND);
+    }
+    
+    return updateDoc;
+  }
+}

@@ -28,27 +28,12 @@ exports.getReview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createReview = catchAsync(async (req, res, next) => {
-  let tourId = req.body.tour;
-  let userId = req.body.user;
-  if (!userId) userId = req.user.id;
-  if (!tourId) tourId = req.params.tourId;
+exports.setUserTourIds = (req, res, next) => {
+  if (!req.body.user) req.body.user = req.user.id;
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  next();
+}
 
-  const data = {
-    review: req.body.review,
-    rating: req.body.rating,
-    tour: tourId,
-    user: userId,
-  }
-
-  const newReview = await reviewService.createReview(data);
-  
-  res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      review: newReview,
-    }
-  });
-});
-
+exports.createReview = handlerFactory.createOne(reviewService.createReview); 
+exports.updateReview = handlerFactory.updateOne(reviewService.updateReview);
 exports.deleteReview = handlerFactory.deleteOne(reviewService.deleteReview); 
