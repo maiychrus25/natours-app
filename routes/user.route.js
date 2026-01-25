@@ -22,6 +22,19 @@ router.patch(
   authController.updatePassword,
 );
 
+// route for personal user
+router.get('/me', authMiddleware.auth(), userController.getMe, userController.getUser);
+
+router.patch(
+  '/update-me-info',
+  authLimiter,
+  authMiddleware.auth(),
+  userController.updateMeInfo,
+);
+
+router.delete('/delete-me', authMiddleware.auth(), userController.deleteMe);
+
+
 router
   .route('/:id')
   .get(
@@ -39,14 +52,5 @@ router
   )
   .post(authMiddleware.auth('admin'), userController.createUser);
 
-// route for personal user
-router.patch(
-  '/update-me-info',
-  authLimiter,
-  authMiddleware.auth(),
-  userController.updateMeInfo,
-);
-
-router.delete('/delete-me', authMiddleware.auth(), userController.deleteMe);
 
 module.exports = router;
