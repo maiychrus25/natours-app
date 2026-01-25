@@ -121,11 +121,16 @@ exports.getReview = catchAsync(async (req, res, next) => {
 });
 
 exports.createReview = catchAsync(async (req, res, next) => {
+ const tourId = req.body.tour;
+  const userId = req.body.user;
+  if (!tourId) tourId = req.params.id;
+  if (!userId) userId = req.user.id;
+
   const data = {
     review: req.body.review,
     rating: req.body.rating,
-    tour: req.params.tourId,
-    user: req.user.id,
+    tour: tourId,
+    user: userId,
   }
 
   const newReview = await tourService.createReview(data);
