@@ -3,8 +3,8 @@ const Review = require('../models/review.model');
 const AppError = require('../utils/appError');
 const baseService = require('./base.service');
 
-exports.getReviews = async (filter) => {
-  const reviews = await Review.find(filter); 
+exports.getReviews = async (tourId, userId) => {
+  const reviews = await Review.find({ user: userId, tour: tourId }); 
   return reviews;
 }
 

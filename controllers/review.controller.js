@@ -4,9 +4,7 @@ const reviewService = require('../services/review.service');
 const handlerFactory = require('./handlerFactory.controller');
 
 exports.getReviews = catchAsync(async (req, res, next) => {
-  const filter = {};
-  if (req.params.tourId) filter.tour = req.params.tourId;
-  const reviews = await reviewService.getReviews(filter);
+  const reviews = await reviewService.getReviews(req.user.id, req.params.tourId);
 
   res.status(httpStatus.OK).json({
     status: 'success',
