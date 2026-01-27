@@ -10,7 +10,7 @@ exports.getAll = (Model) => {
     excludedFields.forEach((el) => delete filterObj[el]);
     
     let filterStr = JSON.stringify(filterObj);
-    filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/, (match) => `$${match}`);
+    filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/g, (match) => `$${match}`);
     
     const totalDocs = await Model.countDocuments(JSON.parse(filterStr));
     
@@ -19,6 +19,7 @@ exports.getAll = (Model) => {
       Model.find(JSON.parse(filterStr)),
       queryString 
     );
+    // const docs = await features.limitFields().sort().paginate().query.explain();
     const docs = await features.limitFields().sort().paginate().query;
 
     // 3) Pagination check
