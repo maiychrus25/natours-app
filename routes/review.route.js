@@ -10,12 +10,12 @@ const router = express.Router({ mergeParams: true });
 //   .get(authMiddleware.auth(), reviewController.getReviewOnTour)
 
 router.route('/')
-  .get(authMiddleware.auth(), reviewController.getReviews)
+  .get(reviewController.getReviews)
   .post(authMiddleware.auth(), reviewController.setUserTourIds, reviewController.createReview)
 
 router.route('/:id')
-  .get(authMiddleware.auth(), reviewController.getReview)
-  .patch(authMiddleware.auth(), reviewController.updateReview)
-  .delete(authMiddleware.auth(), reviewController.deleteReview);
+  .get(reviewController.getReview)
+  .patch(authMiddleware.auth(), authMiddleware.restrictTo('user', 'admin'), reviewController.updateReview)
+  .delete(authMiddleware.auth(), authMiddleware.restrictTo('user', 'admin'), reviewController.deleteReview);
 
 module.exports = router;

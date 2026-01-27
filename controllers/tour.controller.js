@@ -3,7 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const tourService = require('../services/tour.service');
 const handlerFactory = require('./handlerFactory.controller');
 
-exports.getAllTour = handlerFactory.getAll(tourService.getTours); 
+exports.getTours = handlerFactory.getAll(tourService.getTours); 
 
 exports.getTour = handlerFactory.getOne(tourService.getTour);
 

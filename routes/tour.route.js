@@ -13,7 +13,7 @@ router.use('/:tourId/reviews', reviewRouter);
 
 router
   .route('/top-5-cheap')
-  .get(tourMiddleware.aliasTopTours, tourController.getAllTour);
+  .get(tourMiddleware.aliasTopTours, tourController.getTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
 
@@ -24,7 +24,7 @@ router
     tourController.getMonthlyPlan,
   );
 
-router.route('/').get(authMiddleware.auth(), tourController.getAllTour).post(
+router.route('/').get(tourController.getTours).post(
   authMiddleware.auth('lead-guide', 'admin'),
   // authMiddleware.restrictTo('lead-guide', 'admin'),
   tourController.createTour,
