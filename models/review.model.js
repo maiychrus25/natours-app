@@ -27,6 +27,9 @@ const reviewSchema = mongoose.Schema({
   toObject: { virtuals: true }
 });
 
+// INDEXES
+reviewSchema.index({ user: 1, tour: 1 }, { unique: true });
+
 // QUERY MIDDLEWARES
 reviewSchema.pre(/^find/, function (next) {
   // this.populate({ 
