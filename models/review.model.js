@@ -63,23 +63,37 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     }
   ]);
 
-  await Tour.findByIdAndUpdate(tourId, { 
-    ratingsQuantity: stats[0].numRating,
-    ratingsAverage: stats[0].avgRating
-  });
+  if (stats.length) {
+    await Tour.findByIdAndUpdate(tourId, { 
+      ratingsQuantity: stats[0].numRating,
+      ratingsAverage: stats[0].avgRating
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, { 
+      ratingsQuantity: stats[0].numRating,
+      ratingsAverage: stats[0].avgRating
+    });
+  }
 }
 
-reviewSchema.post('save', function (next) {
+reviewSchema.post('save', function () {
   // this points to current review
   // Review.calcAverageRatings(this.tour);
   this.constructor.calcAverageRatings(this.tour);
 })
 
+reviewSchema.pre(/^findOneAnd/, async function () {
+  // this.findOne() not working in new version mongoose
+  // solution for this is clone() query
+  this.r = await this.clone().findOne();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  // await this.findOne(): does NOT work here, query already executed
+  await this.r.constructor.calcAverageRatings(this.r.tour);
+});
+
 const Review = mongoose.model('Review', reviewSchema, 'reviews');
 
 module.exports = Review;
 
-// NESTED ROUTES
-// POST: /tour/:tourId/reviews
-// GET: /tour/:tourId/reviews
-// GET: /tour/:tourId/reviews/:reviewID
