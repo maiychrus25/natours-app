@@ -36,5 +36,22 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
 
+  if (!lat || !lng) {
+    return next(new AppError('Plesae provde latituter and longitude in the format lat, lng!', httpStatus.BAD_REQUEST));
+  }
+
+  const tours = await tourService.getToursWithin(Number(distance), lat, lng, unit);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours: tours
+    }
+  });
+});
 

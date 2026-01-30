@@ -24,6 +24,12 @@ router
     tourController.getMonthlyPlan,
   );
 
+// /tours-within/:distance/center/latlng/unit/:unit
+// /tours-within/500/center/34.02047895,-118.4117326/unit/mi 
+
+router.route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+
 router.route('/').get(tourController.getTours).post(
   authMiddleware.auth('lead-guide', 'admin'),
   // authMiddleware.restrictTo('lead-guide', 'admin'),

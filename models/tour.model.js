@@ -162,6 +162,7 @@ tourSchema.pre('save', function(next) {
 // INDEXES
 tourSchema.index({ slug: 1 });
 tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ location: '2dsphere' });
 
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function(next) {

@@ -125,6 +125,19 @@ exports.getMonthlyPlan = async (year) => {
   return plan;
 };
 
+exports.getToursWithin = async (distance, lat, lng, unit) => {
+  const radian = (unit === 'mi' ? distance / 3963.2 : distance / 6378.1); 
+
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [[lng, lat], radian]
+      }
+    }
+  });
+  
+  return tours;
+};
 
 // HANDLE REVIEWS 
 exports.getReviews = async (userId, tourId) => {
@@ -153,3 +166,4 @@ exports.createReview = async (data) => {
   const newReview = await Review.create(data);
   return newReview;
 }
+
