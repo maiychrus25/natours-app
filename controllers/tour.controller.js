@@ -1,79 +1,17 @@
 const httpStatus = require('http-status');
-const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const tourService = require('../services/tour.service');
 const handlerFactory = require('./handlerFactory.controller');
 
-exports.getAllTour = catchAsync(async (req, res, next) => {
-  const tours = await tourService.getAllTour(req.query);
+exports.getTours = handlerFactory.getAll(tourService.getTours); 
 
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-});
+exports.getTour = handlerFactory.getOne(tourService.getTour);
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await tourService.getTour(req.params.id);
+exports.createTour = handlerFactory.createOne(tourService.createTour); 
 
-  if (!tour) {
-    return next(
-      new AppError('No tour found with that ID!', httpStatus.NOT_FOUND),
-    );
-  }
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
-
-exports.createTour = catchAsync(async (req, res) => {
-  const tour = await tourService.createTour(req.body);
-
-  res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await tourService.updateTour(req.params.id, req.body);
-
-  if (!tour) {
-    return next(new AppError('No tour found to update!', httpStatus.NOT_FOUND));
-  }
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
+exports.updateTour = handlerFactory.updateOne(tourService.updateTour); 
 
 exports.deleteTour = handlerFactory.deleteOne(tourService.deleteTour); 
-
-// exports.deleteTour = catchAsync(async (req, res, next) => {
-//   const tour = await tourService.deleteTour(req.params.id);
-//
-//   if (!tour) {
-//     return next(new AppError('No tour found with that ID!', 404));
-//   }
-//
-//   res.status(httpStatus.NO_CONTENT).json({
-//     status: 'success',
-//     message: 'Deleted a tour successfully!',
-//     data: null,
-//   });
-// });
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const tourStats = await tourService.getTourStats();
@@ -98,5 +36,40 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
 
+  if (!lat || !lng) {
+    return next(new AppError('Plesae provide latituter and longitude in the format lat, lng!', httpStatus.BAD_REQUEST));
+  }
 
+  const tours = await tourService.getToursWithin(distance * 1, lat * 1, lng * 1, unit);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours: tours
+    }
+  });
+});
+
+exports.getToursDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  if (!lat || !lng) {
+    return next(new AppError('Please provide latituder and longitude in the format lat, lng!', httpStatus.BAD_REQUEST));
+  }
+
+  const distances = await tourService.getToursDistances(lat * 1, lng * 1, unit);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: distances.length,
+    data: {
+      distances: distances,
+    }
+  });
+});

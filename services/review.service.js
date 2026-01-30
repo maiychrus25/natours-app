@@ -1,8 +1,7 @@
-const httpStatus = require('http-status');
 const Review = require('../models/review.model');
-const AppError = require('../utils/appError');
 const baseService = require('./base.service');
 
+<<<<<<< HEAD
 exports.getReviews = async (tourId, userId) => {
   const reviews = await Review.find({ user: userId, tour: tourId }); 
   return reviews;
@@ -22,4 +21,10 @@ exports.createReview = async (data) => {
   return newReview;
 }
 
+=======
+exports.getReviews = baseService.getAll(Review); 
+exports.getReview = baseService.getOne(Review);
+exports.createReview = baseService.createOne(Review); 
+exports.updateReview = baseService.updateOne(Review);
+>>>>>>> refactor/mvc-service-layer
 exports.deleteReview = baseService.deleteById(Review);

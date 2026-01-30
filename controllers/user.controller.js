@@ -1,63 +1,22 @@
 const httpStatus = require('http-status');
+const catchAsync = require('../utils/catchAsync');
 const handlerFactory = require('./handlerFactory.controller');
 const userService = require('../services/user.service');
-const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 
-exports.getAllUser = catchAsync(async (req, res, next) => {
-  const users = await userService.getAllUser(req.query);
+exports.getAllUser = handlerFactory.getAll(userService.getUsers);
 
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users: users,
-    },
-  });
-});
+exports.getUser = handlerFactory.getOne(userService.getUser); 
 
-exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await userService.getUser(req.params.id);
+exports.createUser = handlerFactory.createOne(userService.createUser); 
 
-  if (!user) {
-    return next(
-      new AppError('No user found with that ID!', httpStatus.NOT_FOUND),
-    );
-  }
+exports.updateUser = handlerFactory.updateOne(userService.updateUser); 
 
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      user: user,
-    },
-  });
-});
+exports.deleteUser = handlerFactory.deleteOne(userService.deleteUser); 
 
-exports.createUser = catchAsync(async (req, res, next) => {
-  const newUser = await userService.createUser(req.body);
-
-  res.status(httpStatus.CREATED).json({
-    status: 'success',
-    data: {
-      user: newUser,
-    },
-  });
-});
-
-exports.updateUser = catchAsync(async (req, res, next) => {
-  const user = await userService.updateUser(req.params.id, req.body);
-
-  if (!user) {
-    return next(new AppError('No user found to update!', httpStatus.NOT_FOUND));
-  }
-
-  res.status(httpStatus.OK).json({
-    status: 'success',
-    data: {
-      user: user,
-    },
-  });
-});
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+}
 
 exports.updateMeInfo = catchAsync(async (req, res, next) => {
   const user = await userService.updateMeInfo(req.user.id, req.body);
@@ -70,6 +29,11 @@ exports.updateMeInfo = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteUser = handlerFactory.deleteOne(userService.deleteUser); 
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await userService.deleteMe(req.user.id);
 
-exports.deleteMe = handlerFactory.deleteOne(userService.deleteMe); 
+  res.status(httpStatus.NO_CONTENT).json({
+    status: 'success',
+    data: null
+  })
+})

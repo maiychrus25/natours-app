@@ -1,6 +1,5 @@
 const Tour = require('../models/tour.model');
 const Review = require('../models/review.model');
-const APIFeatures = require('../utils/APIFeatures');
 const baseService = require('./base.service');
 
 /**
@@ -12,60 +11,21 @@ const baseService = require('./base.service');
  * @param {number} [options.page] - Current page (default = 1)
  * @returns {QueryResult}
  **/
-
-exports.getAllTour = async (queryString) => {
-  // 1) Count total documents matching filter
-  const filterObj = { ...queryString };
-  const excludedFields = ['limit', 'page', 'sort', 'fields'];
-
-  // eslint-disable-next-line arrow-body-style
-  excludedFields.forEach((el) => delete filterObj[el]);
-
-  let filterStr = JSON.stringify(filterObj);
-  // eslint-disable-next-line arrow-body-style
-  filterStr = filterStr.replace(/\b(lte|gte|lt|gt)\b/, (match) => `$${match}`);
-
-  const totalDocs = await Tour.countDocuments(JSON.parse(filterStr));
-
-  // 2) Apply features
-  const features = new APIFeatures(
-    Tour.find(JSON.parse(filterStr)),
-    queryString,
-  );
-  const tours = await features.limitFields().sort().paginate().query;
-
-  // 3) Pagination check
-  const limit = queryString.limit * 1 || 5;
-  const page = queryString.page * 1 || 1;
-
-  const totalPages = Math.ceil(totalDocs / limit);
-  if (page > totalPages && totalDocs > 0) {
-    throw new Error('This page does not exist!');
-  }
-
-  return tours || [];
-};
+exports.getTours = baseService.getAll(Tour); 
 
 /**
  * Get tour by id
  * @param {ObjectId} id
  * @returns {Tour}
  **/
-
-exports.getTour = async (tourId) => {
-  // return Tour.findOne({ _id: tourId });
-  return Tour.findById(tourId).populate('reviews');
-};
+exports.getTour = baseService.getOne(Tour, { path: 'reviews', select: '-__v' });
 
 /**
  * Create a tour
  * @param {Object} tourBody
  * @returns {Tour}
  **/
-
-exports.createTour = async (data) => {
-  return await Tour.create(data);
-};
+exports.createTour = baseService.createOne(Tour); 
 
 /**
  * Update tour by id
@@ -74,13 +34,7 @@ exports.createTour = async (data) => {
  * @returns {updateTour}
  **/
 
-exports.updateTour = async (tourId, data) => {
-  // return await Tour.updateOne({ _id: tourId }, data)
-  return await Tour.findByIdAndUpdate(tourId, data, {
-    new: true,
-    runValidators: true,
-  });
-};
+exports.updateTour = baseService.updateOne(Tour);
 
 /**
  * Delete tour by id
@@ -171,6 +125,46 @@ exports.getMonthlyPlan = async (year) => {
   return plan;
 };
 
+exports.getToursWithin = async (distance, lat, lng, unit) => {
+  const radian = (unit === 'mi' ? distance / 3963.2 : distance / 6378.1); 
+
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [[lng, lat], radian]
+      }
+    }
+  });
+  
+  return tours;
+};
+
+exports.getToursDistances = async (lat, lng, unit) => {
+  const mutiplier = (unit === 'mi' ? 0.000621371192 : 0.001);
+
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        },
+        distanceField: 'distance',
+        spherical: true,
+        key: 'startLocation',
+        distanceMultiplier: mutiplier
+      }
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1
+      }
+    }
+  ]);
+
+  return distances;
+}
 
 // HANDLE REVIEWS 
 exports.getReviews = async (userId, tourId) => {
@@ -199,3 +193,5 @@ exports.createReview = async (data) => {
   const newReview = await Review.create(data);
   return newReview;
 }
+
+

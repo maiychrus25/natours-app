@@ -6,14 +6,16 @@ const authMiddleware = require('../middlewares/auth.middleware');
 // --> mergeParams allow it.
 const router = express.Router({ mergeParams: true });
 
-router.route('/:reviewId')
-  .get(authMiddleware.auth(), reviewController.getReview)
+// router.route('/:reviewId')
+//   .get(authMiddleware.auth(), reviewController.getReviewOnTour)
 
 router.route('/')
-  .get(authMiddleware.auth(), reviewController.getReviews)
-  .post(authMiddleware.auth(), reviewController.createReview)
+  .get(reviewController.getReviews)
+  .post(authMiddleware.auth(), reviewController.setUserTourIds, reviewController.createReview)
 
 router.route('/:id')
-  .delete(authMiddleware.auth(), reviewController.deleteReview);
+  .get(reviewController.getReview)
+  .patch(authMiddleware.auth(), authMiddleware.restrictTo('user', 'admin'), reviewController.updateReview)
+  .delete(authMiddleware.auth(), authMiddleware.restrictTo('user', 'admin'), reviewController.deleteReview);
 
 module.exports = router;

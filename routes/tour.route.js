@@ -13,7 +13,7 @@ router.use('/:tourId/reviews', reviewRouter);
 
 router
   .route('/top-5-cheap')
-  .get(tourMiddleware.aliasTopTours, tourController.getAllTour);
+  .get(tourMiddleware.aliasTopTours, tourController.getTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
 
@@ -24,7 +24,17 @@ router
     tourController.getMonthlyPlan,
   );
 
-router.route('/').get(authMiddleware.auth(), tourController.getAllTour).post(
+// /tours-within/:distance/center/latlng/unit/:unit
+// /tours-within/500/center/34.02047895,-118.4117326/unit/mi 
+
+router.route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+
+// /tours/distances/:latlng/unit/:unit 
+router.route('/distances/:latlng/unit/:unit')
+  .get(tourController.getToursDistances);
+
+router.route('/').get(tourController.getTours).post(
   authMiddleware.auth('lead-guide', 'admin'),
   // authMiddleware.restrictTo('lead-guide', 'admin'),
   tourController.createTour,

@@ -14,13 +14,35 @@ router.post('/signin', authLimiter, authController.login);
 router.post('/forgot-password', authLimiter, authController.forgotPassword);
 router.patch('/reset-password/:token', authLimiter, authController.resetPassword);
 
+router.use(authMiddleware.auth());
+
 // Login need protect
+// route for personal user
 router.patch(
   '/update-password',
   authLimiter,
-  authMiddleware.auth(),
   authController.updatePassword,
 );
+
+router.get('/me', userController.getMe, userController.getUser);
+
+router.patch(
+  '/update-me-info',
+  authLimiter,
+  userController.updateMeInfo,
+);
+
+router.delete('/delete-me', userController.deleteMe);
+
+router.use(authMiddleware.restrictTo('admin'));
+
+router
+  .route('/:id')
+  .get(
+    userController.getUser,
+  )
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 router
   .route('/')
@@ -30,23 +52,5 @@ router
   )
   .post(authMiddleware.auth('admin'), userController.createUser);
 
-// route for personal user
-router.patch(
-  '/update-me-info',
-  authLimiter,
-  authMiddleware.auth(),
-  userController.updateMeInfo,
-);
-
-router.delete('/delete-me', authMiddleware.auth(), userController.deleteMe);
-
-router
-  .route('/:id')
-  .get(
-    authMiddleware.auth('guide', 'lead-guide', 'admin'),
-    userController.getUser,
-  )
-  .patch(authMiddleware.auth('admin'), userController.updateUser)
-  .delete(authMiddleware.auth('admin'), userController.deleteUser);
 
 module.exports = router;
