@@ -1,3 +1,4 @@
+const path = require('path');
 const httpStatus = require('http-status');
 const express = require('express');
 const morgan = require('morgan');
@@ -19,9 +20,16 @@ const reviewRoutes = require('./routes/review.route');
 
 const app = express();
 
+// Set view engine
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // =====================================
-// 1. GLOBAL MIDDLEWARESi              # 
+// 1. GLOBAL MIDDLEWARE:              # 
 // ====================================
+
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP Headers
 // Giup che giau thong tin server va ngan chan cac ma doc
@@ -51,7 +59,7 @@ app.use(xss())
 // Prevent parameter pollution
 // Ngan chan loi khi user gui 2 tham so giong nhau(Ex: ?sort=duration&sort=price)
 /// whitelist: cac tham so cho phep trung lap 
-/app.use(
+app.use(
   hpp({
     whitelist: [
       'duration',
@@ -75,8 +83,14 @@ passport.use('jwt', jwtStrategy);
 // =============================
 // 3. ROUTES                   =
 // ============================
+app.get('/', (req, res) => {
+  res.status(httpStatus.OK).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Mai'
+  });
+});
 
-// Routers
+// Routers API
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
