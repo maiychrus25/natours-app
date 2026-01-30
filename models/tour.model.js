@@ -23,7 +23,7 @@ const tourSchema = new mongoose.Schema(
     },
     duration: {
       type: Number,
-      requied: 'A tour must have a durations!',
+      required: 'A tour must have a durations!',
     },
     maxGroupSize: {
       type: Number,
@@ -162,7 +162,7 @@ tourSchema.pre('save', function(next) {
 // INDEXES
 tourSchema.index({ slug: 1 });
 tourSchema.index({ price: 1, ratingsAverage: -1 });
-tourSchema.index({ location: '2dsphere' });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function(next) {
@@ -179,7 +179,9 @@ tourSchema.post(/^find/, function(docs, next) {
 
 // AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function(next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  if (!this.pipeline()[0]['$geoNear']) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  }
   next();
 });
 

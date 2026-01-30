@@ -139,6 +139,33 @@ exports.getToursWithin = async (distance, lat, lng, unit) => {
   return tours;
 };
 
+exports.getToursDistances = async (lat, lng, unit) => {
+  const mutiplier = (unit === 'mi' ? 0.000621371192 : 0.001);
+
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        },
+        distanceField: 'distance',
+        spherical: true,
+        key: 'startLocation',
+        distanceMultiplier: mutiplier
+      }
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1
+      }
+    }
+  ]);
+
+  return distances;
+}
+
 // HANDLE REVIEWS 
 exports.getReviews = async (userId, tourId) => {
   if (!userId || !tourId) {
@@ -166,4 +193,5 @@ exports.createReview = async (data) => {
   const newReview = await Review.create(data);
   return newReview;
 }
+
 

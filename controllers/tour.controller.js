@@ -41,10 +41,10 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   const [lat, lng] = latlng.split(',');
 
   if (!lat || !lng) {
-    return next(new AppError('Plesae provde latituter and longitude in the format lat, lng!', httpStatus.BAD_REQUEST));
+    return next(new AppError('Plesae provide latituter and longitude in the format lat, lng!', httpStatus.BAD_REQUEST));
   }
 
-  const tours = await tourService.getToursWithin(Number(distance), lat, lng, unit);
+  const tours = await tourService.getToursWithin(distance * 1, lat * 1, lng * 1, unit);
 
   res.status(httpStatus.OK).json({
     status: 'success',
@@ -55,3 +55,21 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getToursDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  if (!lat || !lng) {
+    return next(new AppError('Please provide latituder and longitude in the format lat, lng!', httpStatus.BAD_REQUEST));
+  }
+
+  const distances = await tourService.getToursDistances(lat * 1, lng * 1, unit);
+
+  res.status(httpStatus.OK).json({
+    status: 'success',
+    results: distances.length,
+    data: {
+      distances: distances,
+    }
+  });
+});

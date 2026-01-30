@@ -30,6 +30,10 @@ router
 router.route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(tourController.getToursWithin);
 
+// /tours/distances/:latlng/unit/:unit 
+router.route('/distances/:latlng/unit/:unit')
+  .get(tourController.getToursDistances);
+
 router.route('/').get(tourController.getTours).post(
   authMiddleware.auth('lead-guide', 'admin'),
   // authMiddleware.restrictTo('lead-guide', 'admin'),
