@@ -17,6 +17,7 @@ const globalErrorHandle = require('./services/error.service');
 const tourRoutes = require('./routes/tour.route');
 const userRoutes = require('./routes/user.route');
 const reviewRoutes = require('./routes/review.route');
+const viewRoutes = require('./routes/view.route');
 
 const app = express();
 
@@ -83,26 +84,9 @@ passport.use('jwt', jwtStrategy);
 // =============================
 // 3. ROUTES                   =
 // ============================
-app.get('/', (req, res) => {
-  res.status(httpStatus.OK).render('base', {
-    tour: 'The Forest Hiker',
-    user: 'Mai'
-  });
-});
-
-app.get('/overview', (req, res) => {
-  res.status(httpStatus.OK).render('overview', {
-    title: 'All tours'
-  });
-});
-
-app.get('/tour', (req, res) => {
-  res.status(httpStatus.OK).render('tour', {
-    title: 'The forest hiker'
-  });
-});
 
 // Routers API
+app.use('/', viewRoutes);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
