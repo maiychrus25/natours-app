@@ -2,46 +2,16 @@ const Tour = require('../models/tour.model');
 const Review = require('../models/review.model');
 const baseService = require('./base.service');
 
-/**
- * Query for tours
- * @param {Object} filter - Mongo filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField: (desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 5)
- * @param {number} [options.page] - Current page (default = 1)
- * @returns {QueryResult}
- **/
 exports.getTours = baseService.getAll(Tour); 
-
-/**
- * Get tour by id
- * @param {ObjectId} id
- * @returns {Tour}
- **/
 exports.getTour = baseService.getOne(Tour, { path: 'reviews', select: '-__v' });
-
-/**
- * Create a tour
- * @param {Object} tourBody
- * @returns {Tour}
- **/
 exports.createTour = baseService.createOne(Tour); 
-
-/**
- * Update tour by id
- * @param {ObjectId} id
- * @param {Object} updateBody
- * @returns {updateTour}
- **/
-
 exports.updateTour = baseService.updateOne(Tour);
-
-/**
- * Delete tour by id
- * @param {ObjectId} tourId
- * @returns {null}
- **/
 exports.deleteTour = baseService.deleteById(Tour); 
+
+exports.getTourBySlug = async (slug) => {
+  const tour = await Tour.findOne({ slug: slug }).populate({ path: 'reviews' });
+  return tour;
+}
 
 exports.getTourStats = async () => {
   const stats = await Tour.aggregate([

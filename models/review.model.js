@@ -32,15 +32,9 @@ reviewSchema.index({ user: 1, tour: 1 }, { unique: true });
 
 // QUERY MIDDLEWARES
 reviewSchema.pre(/^find/, function (next) {
-  // this.populate({ 
-  //   path: 'tour', 
-  //   select: 'name' 
-  // } ).populate({ 
-  //   path: 'user', 
-  //   select: 'name photo' });
   this.populate({ 
     path: 'user', 
-    select: 'name photo' 
+    select: 'name photo'
   });
 
   next();

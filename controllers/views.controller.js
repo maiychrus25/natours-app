@@ -11,8 +11,11 @@ exports.renderOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.renderTour = (req, res) => {
+exports.renderTour = catchAsync(async (req, res, next) => {
+  const tour = await tourService.getTourBySlug(req.params.slug);
+
   res.status(httpStatus.OK).render('tour', {
-    title: 'The forest hiker'
+    title: 'The forest hiker',
+    tour: tour
   });
-};
+});

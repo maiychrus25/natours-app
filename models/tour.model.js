@@ -128,7 +128,7 @@ const tourSchema = new mongoose.Schema(
     ]
   },
   {
-    toJSON: { virtuals: true },
+    toJson: { virtuals: true },
     toObject: { virtuals: true },
   },
 );
@@ -167,7 +167,7 @@ tourSchema.index({ startLocation: '2dsphere' });
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function(next) {
   this.find({ secretTour: { $ne: true } });
-  this.populate({ path: 'guides', select: '-__v -passwordChangedAt' })
+  this.populate({ path: 'guides', select: 'name role photo' })
   this.start = Date.now();
   next();
 });
