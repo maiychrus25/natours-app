@@ -2,14 +2,13 @@ const path = require('path');
 const httpStatus = require('http-status');
 const express = require('express');
 const morgan = require('morgan');
-const passport = require('passport');
 
 const helmet = require('helmet');
 const xss = require('xss-clean')
 const hpp = require('hpp')
 const mongoSanitize = require('express-mongo-sanitize')
 
-const jwtStrategy = require('./config/passport');
+const passport = require('./config/passport');
 const { globalLimiter } = require('./middlewares/rateLimiter.middleware');
 const AppError = require('./utils/appError');
 const globalErrorHandle = require('./services/error.service');
@@ -18,6 +17,7 @@ const tourRoutes = require('./routes/tour.route');
 const userRoutes = require('./routes/user.route');
 const reviewRoutes = require('./routes/review.route');
 const viewRoutes = require('./routes/view.route');
+const authRoutes = require('./routes/auth.route');
 
 const app = express();
 
@@ -79,7 +79,6 @@ app.use(
 
 // JWT authentication
 app.use(passport.initialize());
-passport.use('jwt', jwtStrategy);
 
 // =============================
 // 3. ROUTES                   =
@@ -90,6 +89,7 @@ app.use('/', viewRoutes);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/auth/google', authRoutes);
 
 // ============================
 // 4. ERROR HANDLING          =

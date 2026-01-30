@@ -5,6 +5,10 @@ const AppError = require('../utils/appError');
 const authService = require('../services/auth.service');
 const tokenService = require('../services/token.service');
 
+exports.authGoogle = (req, res) => {
+  tokenService.createSendToken(req.user, httpStatus.OK, req, res);
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await authService.handleSignUp(req.body);
   // const url = `${req.protocol}://${req.get('host')}/me`;

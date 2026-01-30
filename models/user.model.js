@@ -41,7 +41,9 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: 'Pleease provide a password!',
+      required: function () {
+        return this.provider !== 'google'; 
+      },
       minLength: 8,
       trim: true,
       validate: {
@@ -53,10 +55,13 @@ const userSchema = new mongoose.Schema(
     },
     passwordConfirm: {
       type: String,
-      required: 'Please confirm your password!',
+      required: function () {
+        return this.provider !== 'google';
+      },
       validate: {
         // This only works on CREATE and SAVE method!!
         validator: function(el) {
+          if (!this.password) return true;
           return this.password === el;
         },
         message: 'Passwords are not the same!',
@@ -65,6 +70,14 @@ const userSchema = new mongoose.Schema(
     slug: {
       type: String,
       default: '',
+    },
+    provider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local',
+    },
+    googleId: {
+      type: String
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
@@ -95,7 +108,7 @@ userSchema.pre('save', function(next) {
 
 userSchema.pre('save', async function(next) {
   const user = this;
-  if (user.isModified('password')) {
+  if (this.password && user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
     user.passwordConfirm = undefined;
   }
@@ -104,7 +117,7 @@ userSchema.pre('save', async function(next) {
 });
 
 userSchema.pre('save', function(next) {
-  if (this.isModified('password') && !this.isNew) {
+  if (this.password && this.isModified('password') && !this.isNew) {
     this.passwordChangedAt = Date.now() - 1000;
   }
 
