@@ -282,3 +282,10 @@ Express là một chuỗi các middleware xử lý request như một “pipelin
 
 # Params Middleware
 ```
+
+## 📘 API Documentation
+
+The Natours API is fully documented using Postman public documentation.
+
+👉 View full API docs here:  
+🔗 [Postman Docs](https://documenter.getpostman.com/view/43579262/2sBXVo9TLX)
