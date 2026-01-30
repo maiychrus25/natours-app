@@ -7,15 +7,15 @@ html
     link(rel="shortcut icon" type="image/png" href="img/favicon.png")
     link(rel="stylesheet" href="css/style.css")
 
-    title Natours | Exciting tours for adventures people 
+    title Natours | #{title}
 
   body 
     // HEAHDER
     include _header
     
     // CONTENT 
-    main.main  
-      h1= tour
+    block content
+      h1 This is placeholder heading
 
     // FOOTER 
     include _footer

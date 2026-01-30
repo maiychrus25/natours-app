@@ -90,6 +90,18 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/overview', (req, res) => {
+  res.status(httpStatus.OK).render('overview', {
+    title: 'All tours'
+  });
+});
+
+app.get('/tour', (req, res) => {
+  res.status(httpStatus.OK).render('tour', {
+    title: 'The forest hiker'
+  });
+});
+
 // Routers API
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
