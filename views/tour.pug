@@ -1,4 +1,9 @@
 extends base 
+include ./mixins/_overviewBox.pug
+include ./mixins/_reviewCard.pug
+
+block append head
+  link(href="https://api.mapbox.com/mapbox-gl-js/v3.18.1/mapbox-gl.css" rel="stylesheet")
 
 block content 
   section.section-header
@@ -7,12 +12,14 @@ block content
     
     .heading-box
       h1.heading-primary
-        span= tour.name
+        span= `${tour.name} tour`
+
       .heading-box__group
         .heading-box__detail
           svg.heading-box__icon
             use(xlink:href="/img/icons.svg#icon-clock")
           span.heading-box__text=`${tour.duration} days`
+
         .heading-box__detail
           svg.heading-box__icon
             use(xlink:href="/img/icons.svg#icon-map-pin")
@@ -23,73 +30,56 @@ block content
       div 
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Quick facts
-          .overview-box__detail
-            svg.overview-box__icon
-              use(xlink:href="/img/icons.svg#icon-calendar")
-            span.overview-box__label Next date 
-            span.overview-box__text= `${tour.startDates[1].toLocaleString('en-us', { month: 'long', year: 'numeric' })}`
-          .overview-box__detail
-            svg.overview-box__icon
-              use(xlink:href="/img/icons.svg#icon-trending-up")
-            span.overview-box__label Difficulty
-            span.overview-box__text= tour.difficulty
-          .overview-box__detail
-            svg.overview-box__icon
-              use(xlink:href="/img/icons.svg#icon-user")
-            span.overview-box__label Participants
-            span.overviwe-box__text= `${tour.maxGroupSize} peopel}`
-          .overview-box__detail
-            svg.overview-box__icon
-              use(xlink:href="/img/icons.svg#icon-star")
-            span.overview-box__label Rating
-            span.overview-box__text= `${tour.ratingsAverage} / 5}`
-        
+
+          +overviewBox('Next date', `${tour.startDates[0].toLocaleString('en-us', { month: 'long', year: 'numeric' })}`, 'calendar')
+          +overviewBox('Difficulty', tour.difficulty, 'trending-up')
+          +overviewBox('Participants', `${tour.maxGroupSize} people`, 'user')
+          +overviewBox('Rating', `${tour.ratingsAverage} / 5`, 'star')
+          
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Your tour guides
+
             each guide in tour.guides
               .overview-box__detail
                 img.overview-box__img(src=`/img/users/${guide.photo}` alt=`${guide.name}`)
-                span.overview-box__label= guide.role
+
+                - if (guide.role === 'lead-guide')
+                  span.overview-box__label Lead Guide
+
+                - if (guide.role === 'guide')
+                  span.overview-box__label Tour guide
+                
                 span.overview-box__text= guide.name
 
     .description-box
-      .heading-secondary.ma-bt-lg= `About ${tour.name}`
-      .description__text= tour.description 
+      .heading-secondary.ma-bt-lg= `About ${tour.name} tour`
+      
+      - const paragraphs = tour.description.split('\n');
+      each paragraph in paragraphs
+        p.description__text= `${paragraph}` 
       
   section.section-pictures
-    - let iter = 1
-      each image in tour.images
-        .picture-box
-          img.picture-box__img(class=`picture-box__img--${iter++}` src=`/img/tours/${image}` alt=`${tour.name} ${image}`)
+    each image, idx in tour.images
+      .picture-box
+        img.picture-box__img(class=`picture-box__img--${idx + 1}` src=`/img/tours/${image}` alt=`${tour.name} Tour ${idx + 1}`)
 
   section.section-map
-    #map
+    #map(data-locations=`${JSON.stringify(tour.locations)}`)
             
   section.section-reviews
     .reviews
       each review in tour.reviews 
-        .reviews__card
-          .reviews__avatar
-            img.reviews__avatar-img(src=`/img/users/${review.user.photo}` alt=`${review.user.name}`)
-            h6.reviews__user= review.user.name 
-          p.reviews__text= review.review 
-
-          - let iter = [1, 2, 3, 4, 5] 
-          .reviews__rating
-            each item in iter 
-              svg(class=`reviews__star ${item <= review.rating ? 'reviews__star--active' : ''}`)
-                use(xlink:href="/img/icons.svg#icon-star")
+        +reviewCard(review.user.name, review.user.photo, review.review, review.rating)
 
   section.section-cta
     .cta 
       .cta__img.cta__img--logo
         img(src="/img/logo-white.png" alt="Natours logo")
 
-      - iter = 1
-        each image in tour.images 
-          img.cta__img(class=`cta__img--${iter++}` src=`/img/tours/${image}` alt=`${image}`) 
+      img.cta__img(class="cta__img--1" src=`/img/tours/${tour.images[1]}` alt="Tour picture") 
+      img.cta__img(class="cta__img--2" src=`/img/tours/${tour.images[2]}` alt="Tour picture") 
       
       .cta__content
         h2.heading-secondary What are you waiting for?
-        p.cta__text 10 days. 1 adventure. Infinite memories. Make it yours today! 
+        p.cta__text= `${tour.duration} days. ${tour.locations.length} adventure. Infinite memories. Make it yours today!`
         button.btn.btn--green.span-all-rows Book tour now!

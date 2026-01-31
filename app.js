@@ -34,7 +34,51 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP Headers
 // Giup che giau thong tin server va ngan chan cac ma doc
-app.use(helmet())
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+
+        scriptSrc: [
+          "'self'",
+          "https://api.mapbox.com"
+        ],
+
+        styleSrc: [
+          "'self'",
+          "https://api.mapbox.com",
+          "https://fonts.googleapis.com",
+          "'unsafe-inline'" // ⚠️ BẮT BUỘC cho Mapbox
+        ],
+
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https://api.mapbox.com"
+        ],
+
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com"
+        ],
+
+        connectSrc: [
+          "'self'",
+          "https://api.mapbox.com",
+          "https://events.mapbox.com"
+        ],
+
+        workerSrc: [
+          "'self'",
+          "blob:" // ⚠️ BẮT BUỘC cho Mapbox
+        ]
+      }
+    }
+  })
+);
+
 
 // 1) Cau hinh trust proxy (rat qun trong khi deploy len heroku, vercel, AWS, ...)
 // Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user 

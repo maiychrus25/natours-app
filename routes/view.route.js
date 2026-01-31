@@ -4,6 +4,6 @@ const viewsController = require('../controllers/views.controller');
 const router = express.Router();
 
 router.get('/', viewsController.renderOverview);
-router.get('/tours/:slug', viewsController.renderTour);
+router.get('/tour/:slug', viewsController.renderTour);
 
 module.exports = router;
