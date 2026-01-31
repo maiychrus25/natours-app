@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -6,7 +7,20 @@ const authService = require('../services/auth.service');
 const tokenService = require('../services/token.service');
 
 exports.authGoogle = (req, res) => {
-  tokenService.createSendToken(req.user, httpStatus.OK, req, res);
+  const token = jwt.sign({ id: req.user._id, type: 'access' }, process.env.JWT_SECRET_KEY, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  });
+
+  const cookieOptions = {
+    maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  };
+
+  res.cookie("jwt", token, cookieOptions);
+
+  res.redirect("http://localhost:3000/");
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
