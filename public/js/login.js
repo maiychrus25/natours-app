@@ -11,9 +11,14 @@ const handleLogin = async function (email, password) {
       }
     });
     
-    console.log(res);
+    if (res.data.status === 'success') {
+      alert('Logged successfully!');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
   } catch (err) {
-    console.log(err.response.data);
+    alert(err.response.data.message);
   }
 }
 

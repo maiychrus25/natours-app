@@ -1,8 +1,11 @@
 const httpStatus = require('http-status');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const User = require('../models/user.model');
 
 const verifyCallback =
   (req, res, resolve, reject, allowedFields) => async (err, user, info) => {
@@ -50,6 +53,28 @@ exports.auth = (...allowedFields) =>
       .then(() => next())
       .catch((err) => next(err));
   });
+
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (!req.cookies.jwt) return next();
+
+  // 1) Verify token
+  const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET_KEY);
+
+  // 2) Check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) { 
+    return next();
+  }
+  
+  // 3) Check if user changed password after the token was issued
+  if (currentUser.isChangedPasswordAfter(decoded.iat)) {
+    return next();
+  }
+
+  // THERE IS A LOGGED IN USER 
+  res.locals.user = currentUser;
+  next();
+});
 
 /**
  * Handle check current user have permission
