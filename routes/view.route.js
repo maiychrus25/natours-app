@@ -8,7 +8,8 @@ router.get('/auth/login', viewsController.renderLogin);
 
 router.use(authMiddleware.isLoggedIn);
 
-router.get('/', viewsController.renderOverview);
 router.get('/tour/:slug', viewsController.renderTour);
+
+router.get('/', viewsController.renderOverview);
 
 module.exports = router;

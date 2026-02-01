@@ -1322,3 +1322,18 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+
+.notyf {
+  position: fixed !important;
+  top: 1.5rem !important;
+  right: 1.5rem !important;
+  left: auto !important;
+  bottom: auto !important;
+
+  z-index: 99999 !important;
+  pointer-events: none;
+}
+
+.notyf__toast {
+  pointer-events: auto;
+}

@@ -1,6 +1,8 @@
-const formLogin = document.querySelector('.form');
+/* eslint-disable */
+import axios from 'axios';
+import { notify, displayNotify } from './alerts';
 
-const handleLogin = async function (email, password) {
+export const handleLogin = async function (email, password) {
   try {
     const res = await axios({
       method: 'POST',
@@ -12,25 +14,13 @@ const handleLogin = async function (email, password) {
     });
     
     if (res.data.status === 'success') {
-      alert('Logged successfully!');
-      window.setTimeout(() => {
-        location.assign('/');
-      }, 1500);
-    }
+      const username = res.data.data.user.name.split(' ')[0];
+      displayNotify(res.data.status, `Welcome back, ${username}!`);
+      location.assign('/');
+    } 
   } catch (err) {
-    alert(err.response.data.message);
+    notify.error(err.response.data.message || 'Login failed. Please try again!');
   }
 }
 
-// Login 
-if (formLogin) {
-  formLogin.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const email = e.target.email.value;
-    const password = e.target.password.value;
 
-    handleLogin(email, password);
-  });
-}
-// End Login

@@ -15,12 +15,21 @@ exports.authGoogle = (req, res) => {
     maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    // NOTE: must have (OAuth + redirect)
+    sameSite: 'lax'
   };
 
   res.cookie("jwt", token, cookieOptions);
-
-  res.redirect("http://localhost:3000/");
+  res.cookie("notify", JSON.stringify({
+    status: 'success',
+    message: `Welcome back, ${req.user.name}!`
+  }), {
+    maxAge: 10 * 1000,
+    httpOnly: false,
+    sameSite: 'strict',
+  });
+  
+  res.redirect("/");
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
