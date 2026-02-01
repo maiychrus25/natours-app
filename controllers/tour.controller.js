@@ -4,13 +4,9 @@ const tourService = require('../services/tour.service');
 const handlerFactory = require('./handlerFactory.controller');
 
 exports.getTours = handlerFactory.getAll(tourService.getTours); 
-
 exports.getTour = handlerFactory.getOne(tourService.getTour);
-
 exports.createTour = handlerFactory.createOne(tourService.createTour); 
-
 exports.updateTour = handlerFactory.updateOne(tourService.updateTour); 
-
 exports.deleteTour = handlerFactory.deleteOne(tourService.deleteTour); 
 
 exports.getTourStats = catchAsync(async (req, res, next) => {

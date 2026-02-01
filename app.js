@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const xss = require('xss-clean')
 const hpp = require('hpp')
 const mongoSanitize = require('express-mongo-sanitize')
+const cookieParser = require('cookie-parser');
 
 const passport = require('./config/passport');
 const { globalLimiter } = require('./middlewares/rateLimiter.middleware');
@@ -42,7 +43,8 @@ app.use(
 
         scriptSrc: [
           "'self'",
-          "https://api.mapbox.com"
+          "https://api.mapbox.com",
+          "https://cdn.jsdelivr.net"
         ],
 
         styleSrc: [
@@ -67,7 +69,8 @@ app.use(
         connectSrc: [
           "'self'",
           "https://api.mapbox.com",
-          "https://events.mapbox.com"
+          "https://events.mapbox.com",
+          "https://cdn.jsdelivr.net"
         ],
 
         workerSrc: [
@@ -93,6 +96,7 @@ if (process.env.NODE_ENV === 'development') {
 // Body parser, reading data from body into req.body
 // Gioi han du lieu gui len la 10kb de tranh treo server
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL injection
 // Example: '$', { email: { $gt: '' }}

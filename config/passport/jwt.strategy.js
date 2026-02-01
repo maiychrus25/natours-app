@@ -1,9 +1,22 @@
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const User = require('../../models/user.model');
 
+const cookieExtractor = function (req) {
+  let token = null;
+
+  if (req && req.cookies) {
+    token = req.cookies['jwt'];
+  }
+
+  return token;
+}
+
 const jwtOptions = {
   secretOrKey: process.env.JWT_SECRET_KEY,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    ExtractJwt.fromAuthHeaderAsBearerToken(),
+    cookieExtractor
+  ])
 };
 
 const jwtVerify = async (payload, done) => {
