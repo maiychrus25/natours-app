@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/user.controller');
 const authController = require('../controllers/auth.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
+const uploadMiddleware = require('../middlewares/upload.middleware');
 const { authLimiter } = require('../middlewares/rateLimiter.middleware');
 
 // Not login dont protect
@@ -28,6 +29,7 @@ router.get('/me', userController.getMe, userController.getUser);
 
 router.patch(
   '/update-me-info',
+  uploadMiddleware.uploadUserPhoto,
   authLimiter,
   userController.updateMeInfo,
 );

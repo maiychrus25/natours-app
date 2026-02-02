@@ -1,8 +1,6 @@
 const httpStatus = require('http-status');
-
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
-const APIFeatures = require('../utils/APIFeatures');
 const baseService = require('./base.service');
 
 const filterObj = (obj, ...allowedFields) => {
@@ -50,7 +48,7 @@ exports.updateMeInfo = async (userId, data) => {
   }
 
   // 2) Update user document
-  const filteredData = filterObj(data, 'name', 'email');
+  const filteredData = filterObj(data, 'name', 'email', 'photo');
 
   const updatedUser = await User.findByIdAndUpdate(userId, filteredData, {
     new: true,

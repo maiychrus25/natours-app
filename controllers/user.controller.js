@@ -19,7 +19,9 @@ exports.getMe = (req, res, next) => {
 }
 
 exports.updateMeInfo = catchAsync(async (req, res, next) => {
-  const user = await userService.updateMeInfo(req.user.id, req.body);
+  let filename;
+  if (req.file) filename = req.file.filename;
+  const user = await userService.updateMeInfo(req.user.id, { ...req.body, photo: filename });
 
   res.status(httpStatus.OK).json({
     status: 'success',
