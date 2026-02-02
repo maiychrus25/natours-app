@@ -59,7 +59,7 @@ Dự án sử dụng **Yarn** để quản lý gói.
 
 ### 1. Clone dự án
 ```bash
-git clone [https://github.com/your-username/natours-app.git](https://github.com/your-username/natours-app.git)
+git clone [https://github.com/maiychrus25/natours-app.git](https://github.com/maiychrus25/natours-app.git)
 cd natours-app
 ```
 
@@ -69,7 +69,7 @@ yarn install
 ```
 
 ### 3. Cấu hình biến môi trường
-Đổi tên file `example.env` thành `.env` (hoặc `config.env` tùy cấu hình server.js) và điền thông tin:
+Đổi tên file `example.env` thành `config.env` (hoặc `.env` tùy cấu hình server.js) và điền thông tin:
 
 ```env
 PORT=3000
@@ -95,7 +95,7 @@ yarn dev
 
 Chạy môi trường Production:
 ```bash
-yarn start
+yarn start:prod
 ```
 
 ## 📂 Cấu trúc dự án
