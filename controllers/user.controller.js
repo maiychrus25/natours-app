@@ -23,6 +23,7 @@ exports.updateMeInfo = catchAsync(async (req, res, next) => {
 
   res.status(httpStatus.OK).json({
     status: 'success',
+    message: 'Account updated successfully!',
     data: {
       user: user,
     },

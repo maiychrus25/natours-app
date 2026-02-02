@@ -12,7 +12,6 @@ export const notify = new Notyf({
 
 let existNotify = JSON.parse(sessionStorage.getItem("notify"));
 if (existNotify) {
-  console.log(notify);
   if (existNotify.status === 'success') {
     notify.success(existNotify.message);
   }

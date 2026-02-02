@@ -631,7 +631,6 @@ const notify = exports.notify = new _notyf.Notyf({
 });
 let existNotify = JSON.parse(sessionStorage.getItem("notify"));
 if (existNotify) {
-  console.log(notify);
   if (existNotify.status === 'success') {
     notify.success(existNotify.message);
   }
@@ -6902,40 +6901,86 @@ const handleLogout = async function () {
   }
 };
 exports.handleLogout = handleLogout;
+},{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"updateSettings.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.handleUpdateAccount = void 0;
+var _axios = _interopRequireDefault(require("axios"));
+var _alerts = require("./alerts");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const handleUpdateAccount = async function (name, email) {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'PATCH',
+      url: '/api/v1/users/update-me-info',
+      data: {
+        name: name,
+        email: email
+      }
+    });
+    if (res.data.status === 'success') {
+      (0, _alerts.displayNotify)(res.data.status, res.data.message);
+      location.reload(true);
+    }
+  } catch (err) {
+    _alerts.notify.error(err.response.data.message || 'Update failed. Please try again!');
+  }
+};
+exports.handleUpdateAccount = handleUpdateAccount;
 },{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("./alerts");
 var _mapbox = require("./mapbox");
 var _login = require("./login");
+var _updateSettings = require("./updateSettings");
 /* eslint-disable */
 
-const formLogin = document.querySelector('.form');
+const loginForm = document.querySelector('.form--login');
+const userDataForm = document.querySelector('.form-user-data');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
 
 // Login 
-if (formLogin) {
-  formLogin.addEventListener('submit', e => {
+if (loginForm) {
+  loginForm.addEventListener('submit', e => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     (0, _login.handleLogin)(email, password);
   });
 }
+
 // End Login
 
 // Logout
 if (logOutBtn) {
   logOutBtn.addEventListener('click', _login.handleLogout);
 }
+
 // End logout
+
+// Update user data 
+if (userDataForm) {
+  userDataForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    (0, _updateSettings.handleUpdateAccount)(name, email);
+  });
+}
+
+// End update user data
 
 // Mapbox 
 if (mapContainer) {
   const locations = JSON.parse(mapContainer.dataset.locations);
   (0, _mapbox.displayMap)(locations);
 }
+
 // End Mapbox
-},{"./alerts":"alerts.js","./mapbox":"mapbox.js","./login":"login.js"}]},{},["index.js"], null)
+},{"./alerts":"alerts.js","./mapbox":"mapbox.js","./login":"login.js","./updateSettings":"updateSettings.js"}]},{},["index.js"], null)
 //# sourceMappingURL=/bundle.js.map
