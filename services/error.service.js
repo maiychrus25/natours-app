@@ -39,30 +39,59 @@ const handleJWTExpiredError = () => {
   return new AppError(message, statusCode);
 };
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    err: err,
-    message: err.message,
-    stack: err.stack,
+const sendErrorDev = (err, req, res) => {
+  // API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      err: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }
+
+  // RENDERED WEBSITE
+  console.log('ERROR: ', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    message: err.message
   });
 };
 
-const sendErrorProd = (err, res) => {
-  // Operational, trusted error: send message to client!
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
+const sendErrorProd = (err, req, res) => {
+  // API
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send message to client!
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
 
     // Programming or other unknown error: don't leak error details to client!
-  } else {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+    console.log('ERROR: ', err);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
       status: 'error',
       message: 'Something went very wrong!',
     });
   }
+
+ // RENDERED WEBSITE
+ // Operational, trusted error: send message to client!
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      message: err.message,
+    });
+  }
+
+  // Programming or other unknown error: don't leak error details to client!
+  console.log('ERROR: ', err);
+  return res.status(httpStatus.INTERNAL_SERVER_ERROR).render('error', {
+    title: 'Something went wrong!',
+    message: 'Please try again later!',
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -70,7 +99,7 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     error.name = err.name;
@@ -97,6 +126,6 @@ module.exports = (err, req, res, next) => {
       error = handleJWTExpiredError();
     }
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };

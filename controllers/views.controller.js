@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const tourService = require('../services/tour.service');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 exports.renderOverview = catchAsync(async (req, res, next) => {
   const tours = await tourService.getTours({ ...req.query, limit: 10 });
@@ -13,6 +14,10 @@ exports.renderOverview = catchAsync(async (req, res, next) => {
 
 exports.renderTour = catchAsync(async (req, res, next) => {
   const tour = await tourService.getTourBySlug(req.params.slug);
+
+  if (!tour) {
+    return next(new AppError('There is no tour with that name!', httpStatus.NOT_FOUND));
+  }
 
   res.status(httpStatus.OK).render('tour', {
     title: tour.name,
