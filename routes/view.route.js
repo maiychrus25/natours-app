@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.get('/auth/login', viewsController.renderLogin);
 
-router.use(authMiddleware.isLoggedIn);
+router.get('/tour/:slug', authMiddleware.isLoggedIn, viewsController.renderTour);
 
-router.get('/tour/:slug', viewsController.renderTour);
+router.get('/me', authMiddleware.auth(), viewsController.renderAccount);
 
-router.get('/', viewsController.renderOverview);
+router.get('/', authMiddleware.isLoggedIn, viewsController.renderOverview);
 
 module.exports = router;

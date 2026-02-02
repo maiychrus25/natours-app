@@ -30,3 +30,10 @@ exports.renderLogin = (req, res) => {
     title: 'Log into your account',
   });
 }
+
+exports.renderAccount = catchAsync(async (req, res) => {
+  res.status(httpStatus.OK).render('account', {
+    title: 'My account'
+  });
+});
+
