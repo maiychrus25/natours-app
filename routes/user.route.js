@@ -8,6 +8,7 @@ const { authLimiter } = require('../middlewares/rateLimiter.middleware');
 // Not login dont protect
 router.post('/signup', authController.signup);
 router.post('/signin', authLimiter, authController.login);
+router.get('/logout', authController.logout);
 
 // Not login dont protect
 router.post('/forgot-password', authLimiter, authController.forgotPassword);

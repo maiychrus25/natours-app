@@ -23,4 +23,18 @@ export const handleLogin = async function (email, password) {
   }
 }
 
+export const handleLogout = async function () {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: '/api/v1/users/logout',
+    });
 
+    if (res.data.status == 'success') {
+      displayNotify(res.data.status, res.data.message);
+      location.reload(true);
+    }
+  } catch (err) {
+    notify.error(err.response.data.message || 'Logout failed. Please try again!');
+  }
+}

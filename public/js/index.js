@@ -1,9 +1,10 @@
 /* eslint-disable */
 import './alerts';
 import { displayMap } from './mapbox';
-import { handleLogin } from './login';
+import { handleLogin, handleLogout } from './login';
 
 const formLogin = document.querySelector('.form');
+const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
 
 // Login 
@@ -18,6 +19,12 @@ if (formLogin) {
   });
 }
 // End Login
+
+// Logout
+if (logOutBtn) {
+  logOutBtn.addEventListener('click', handleLogout);
+}
+// End logout
 
 // Mapbox 
 if (mapContainer) {

@@ -58,6 +58,18 @@ exports.login = catchAsync(async (req, res, next) => {
   tokenService.createSendToken(user, httpStatus.OK, req, res);
 });
 
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    maxAge: 10 * 1000,
+    httpOnly: true
+  });
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Logged out successfully!',
+  });
+}
+
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/reset-password/<RESET_TOKEN>`;
 

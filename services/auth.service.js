@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const httpStatus = require('http-status');
-
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const userService = require('./user.service');

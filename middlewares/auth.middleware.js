@@ -54,27 +54,32 @@ exports.auth = (...allowedFields) =>
       .catch((err) => next(err));
   });
 
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   if (!req.cookies.jwt) return next();
-
-  // 1) Verify token
-  const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET_KEY);
-
-  // 2) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) { 
-    return next();
-  }
   
-  // 3) Check if user changed password after the token was issued
-  if (currentUser.isChangedPasswordAfter(decoded.iat)) {
+  try {
+    // 1) Verify token
+    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET_KEY);
+
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) { 
+      return next();
+    }
+    
+    // 3) Check if user changed password after the token was issued
+    if (currentUser.isChangedPasswordAfter(decoded.iat)) {
+      return next();
+    }
+
+    // THERE IS A LOGGED IN USER 
+    res.locals.user = currentUser;
+  } catch (err) {
     return next();
   }
 
-  // THERE IS A LOGGED IN USER 
-  res.locals.user = currentUser;
   next();
-});
+};
 
 /**
  * Handle check current user have permission

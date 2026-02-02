@@ -6861,7 +6861,7 @@ exports.Axios = Axios;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.handleLogin = void 0;
+exports.handleLogout = exports.handleLogin = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alerts = require("./alerts");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -6887,6 +6887,21 @@ const handleLogin = async function (email, password) {
   }
 };
 exports.handleLogin = handleLogin;
+const handleLogout = async function () {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'GET',
+      url: '/api/v1/users/logout'
+    });
+    if (res.data.status == 'success') {
+      (0, _alerts.displayNotify)(res.data.status, res.data.message);
+      location.reload(true);
+    }
+  } catch (err) {
+    _alerts.notify.error(err.response.data.message || 'Logout failed. Please try again!');
+  }
+};
+exports.handleLogout = handleLogout;
 },{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -6896,6 +6911,7 @@ var _login = require("./login");
 /* eslint-disable */
 
 const formLogin = document.querySelector('.form');
+const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
 
 // Login 
@@ -6908,6 +6924,12 @@ if (formLogin) {
   });
 }
 // End Login
+
+// Logout
+if (logOutBtn) {
+  logOutBtn.addEventListener('click', _login.handleLogout);
+}
+// End logout
 
 // Mapbox 
 if (mapContainer) {
