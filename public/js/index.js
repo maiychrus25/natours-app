@@ -6,6 +6,7 @@ import { handleUpdateAccount } from './updateSettings';
 
 const loginForm = document.querySelector('.form--login');
 const userDataForm = document.querySelector('.form-user-data');
+const userPasswordForm = document.querySelector('.form-user-settings');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
 
@@ -38,7 +39,26 @@ if (userDataForm) {
     const name = e.target.name.value;
     const email = e.target.email.value;
 
-    handleUpdateAccount(name, email);
+    handleUpdateAccount({ name, email }, 'account');
+  });
+}
+
+if (userPasswordForm) {
+  userPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const savePasswordBtn = document.querySelector('.btn--save-password');
+
+    savePasswordBtn.textContent = 'Updating...';
+    const passwordCurrent = e.target.passwordCurrent.value;
+    const password = e.target.password.value;
+    const passwordConfirm = e.target.passwordConfirm.value;
+
+    await handleUpdateAccount({ passwordCurrent, password, passwordConfirm }, 'password');
+
+    document.querySelector('#password-current').value = '';
+    document.querySelector('#password').value = '';
+    document.querySelector('#password-confirm').value = '';
+    savePasswordBtn.textContent = 'Save password';
   });
 }
 

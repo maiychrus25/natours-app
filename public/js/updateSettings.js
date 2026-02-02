@@ -1,19 +1,20 @@
 import axios from 'axios';
 import { notify, displayNotify } from './alerts';
 
-export const handleUpdateAccount = async function (name, email) {
+export const handleUpdateAccount = async function (data, type) {
   try {
+    const URL = type === 'password' 
+      ? '/api/v1/users/update-password' 
+      : '/api/v1/users/update-me-info'; 
+    
     const res = await axios({
       method: 'PATCH',
-      url: '/api/v1/users/update-me-info',
-      data: {
-        name: name,
-        email: email
-      }
+      url: URL,
+      data: data,
     });
 
     if (res.data.status === 'success') {
-      displayNotify(res.data.status, res.data.message);
+      displayNotify(res.data.status, `${type.toUpperCase()} updated successfully!`);
       location.reload(true);
     }
   } catch (err) {

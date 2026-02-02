@@ -92,9 +92,9 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await authService.updatePasword(
     req.user.email,
+    req.body.passwordCurrent,
     req.body.password,
-    req.body.newPassword,
-    req.body.newPasswordConfirm,
+    req.body.passwordConfirm,
   );
   tokenService.createSendToken(user, httpStatus.OK, req, res);
 });

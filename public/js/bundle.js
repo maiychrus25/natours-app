@@ -6911,18 +6911,16 @@ exports.handleUpdateAccount = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alerts = require("./alerts");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-const handleUpdateAccount = async function (name, email) {
+const handleUpdateAccount = async function (data, type) {
   try {
+    const URL = type === 'password' ? '/api/v1/users/update-password' : '/api/v1/users/update-me-info';
     const res = await (0, _axios.default)({
       method: 'PATCH',
-      url: '/api/v1/users/update-me-info',
-      data: {
-        name: name,
-        email: email
-      }
+      url: URL,
+      data: data
     });
     if (res.data.status === 'success') {
-      (0, _alerts.displayNotify)(res.data.status, res.data.message);
+      (0, _alerts.displayNotify)(res.data.status, `${type.toUpperCase()} updated successfully!`);
       location.reload(true);
     }
   } catch (err) {
@@ -6941,6 +6939,7 @@ var _updateSettings = require("./updateSettings");
 
 const loginForm = document.querySelector('.form--login');
 const userDataForm = document.querySelector('.form-user-data');
+const userPasswordForm = document.querySelector('.form-user-settings');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
 
@@ -6969,7 +6968,29 @@ if (userDataForm) {
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
-    (0, _updateSettings.handleUpdateAccount)(name, email);
+    (0, _updateSettings.handleUpdateAccount)({
+      name,
+      email
+    }, 'account');
+  });
+}
+if (userPasswordForm) {
+  userPasswordForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const savePasswordBtn = document.querySelector('.btn--save-password');
+    savePasswordBtn.textContent = 'Updating...';
+    const passwordCurrent = e.target.passwordCurrent.value;
+    const password = e.target.password.value;
+    const passwordConfirm = e.target.passwordConfirm.value;
+    await (0, _updateSettings.handleUpdateAccount)({
+      passwordCurrent,
+      password,
+      passwordConfirm
+    }, 'password');
+    document.querySelector('#password-current').value = '';
+    document.querySelector('#password').value = '';
+    document.querySelector('#password-confirm').value = '';
+    savePasswordBtn.textContent = 'Save password';
   });
 }
 
