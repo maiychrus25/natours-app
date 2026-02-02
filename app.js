@@ -59,7 +59,8 @@ app.use(
           "'self'",
           "data:",
           "blob:",
-          "https://api.mapbox.com"
+          "https://api.mapbox.com",
+          "https://res.cloudinary.com"
         ],
 
         fontSrc: [
