@@ -72,6 +72,14 @@ exports.createOne = serviceFn => {
 
 exports.updateOne = serviceFn => {
   return catchAsync (async (req, res, next) => {
+    if (req.files?.imageCover) {
+      req.body.imageCover = `${req.files.imageCover[0].path}`;
+    }
+
+    if (req.files?.images) {
+      req.body.images = req.files.images.map(file => file.path);
+    }
+
     const doc = await serviceFn(req.params.id, req.body);
 
     res.status(httpStatus.OK).json({

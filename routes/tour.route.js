@@ -6,6 +6,7 @@ const reviewRouter = require('./review.route');
 const tourController = require('../controllers/tour.controller');
 const tourMiddleware = require('../middlewares/tour.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
+const uploadMiddleware = require('../middlewares/upload.middleware');
 
 // router.param('id', tourMiddlewares.checkID);
 
@@ -34,16 +35,23 @@ router.route('/tours-within/:distance/center/:latlng/unit/:unit')
 router.route('/distances/:latlng/unit/:unit')
   .get(tourController.getToursDistances);
 
-router.route('/').get(tourController.getTours).post(
-  authMiddleware.auth('lead-guide', 'admin'),
-  // authMiddleware.restrictTo('lead-guide', 'admin'),
-  tourController.createTour,
-);
+router.route('/').
+  get(tourController.getTours)
+  .post(
+    authMiddleware.auth('lead-guide', 'admin'),
+    authMiddleware.restrictTo('lead-guide', 'admin'),
+    tourController.createTour,
+  );
 
 router
   .route('/:id')
   .get(tourController.getTour)
-  .patch(authMiddleware.auth('lead-guide', 'admin'), tourController.updateTour)
+  .patch(
+    authMiddleware.auth('lead-guide', 'admin'), 
+    uploadMiddleware.setImageIndex,
+    uploadMiddleware.uploadTourImages, 
+    tourController.updateTour
+  )
   .delete(
     authMiddleware.auth('lead-guide', 'admin'),
     tourController.deleteTour,

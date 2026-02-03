@@ -38,7 +38,38 @@ const storage = new CloudinaryStorage({
 
     if (req.baseUrl.includes('tours')) {
       folder = 'natours-app/tours';
-      publicId = `tour-${req.params.slug}-${Date.now()}`;
+      publicId = `tour-${req.params.id}-${Date.now()}`;
+    }
+
+    // IMAGE COVER || IMAGES
+    if (file.filename === 'imageCover') {
+      publicId = `tour-${req.params.id}-${Date.now()}-cover`;
+      transformation = [
+        {
+          width: 2000,
+          height: 1333,
+          crop: 'fill'
+        },
+        {
+          quality: 'auto',
+          fetch_format: 'auto'
+        }
+      ]
+    }
+
+    if (file.filename === 'images') {
+      publicId = `tour-${req.params.id}-${Date.now()}-${file.imageIndex}`;
+      transformation = [
+        {
+          width: 2000,
+          height: 1333,
+          crop: 'fill'
+        },
+        {
+          quality: 'auto',
+          fetch_format: 'auto'
+        }
+      ]
     }
 
     return {
@@ -64,3 +95,18 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single('photo');
 
+exports.uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 },
+  { name: 'images', maxCount: 3 }
+]);
+
+
+exports.setImageIndex = (req, res, next) => {
+  if (!req.files?.images) return next();
+
+  req.files.images.forEach((file, index) => {
+    file.imageIndex = index + 1;
+  });
+
+  next();
+};
