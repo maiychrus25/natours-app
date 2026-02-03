@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const Email = require('../utils/mailtrap');
 
 const authService = require('../services/auth.service');
 const tokenService = require('../services/token.service');
@@ -34,7 +35,10 @@ exports.authGoogle = (req, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await authService.handleSignUp(req.body);
-  // const url = `${req.protocol}://${req.get('host')}/me`;
+
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(newUser, url).sendWelcome();
+
   tokenService.createSendToken(newUser, httpStatus.CREATED, req, res);
 });
 

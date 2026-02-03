@@ -42,7 +42,9 @@ module.exports = class Email {
       to: this.to, 
       subject: subject, 
       html: html,
-      text: htmlToText.fromString(html),
+      text: htmlToText.htmlToText(html, {
+        wordwrap: 130
+      })
     };
 
     // 3) Create a transport and send email 
