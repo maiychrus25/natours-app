@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/auth/login', viewsController.renderLogin);
 
+router.get('/auth/signup', viewsController.renderSignUp);
+
 router.get('/tour/:slug', authMiddleware.isLoggedIn, viewsController.renderTour);
 
 router.get('/me', authMiddleware.auth(), viewsController.renderAccount);

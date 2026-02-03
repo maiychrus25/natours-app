@@ -60,7 +60,8 @@ app.use(
           "data:",
           "blob:",
           "https://api.mapbox.com",
-          "https://res.cloudinary.com"
+          "https://res.cloudinary.com",
+          "https://lh3.googleusercontent.com",
         ],
 
         fontSrc: [

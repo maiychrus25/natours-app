@@ -6860,7 +6860,7 @@ exports.Axios = Axios;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.handleLogout = exports.handleLogin = void 0;
+exports.handleSignUp = exports.handleLogout = exports.handleLogin = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alerts = require("./alerts");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -6886,6 +6886,28 @@ const handleLogin = async function (email, password) {
   }
 };
 exports.handleLogin = handleLogin;
+const handleSignUp = async function (name, email, password, passwordConfirm) {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'POST',
+      url: '/api/v1/users/signup',
+      data: {
+        name: name,
+        email: email,
+        password: password,
+        passwordConfirm: passwordConfirm
+      }
+    });
+    if (res.data.status === 'success') {
+      const username = res.data.data.user.name.split(' ')[0];
+      (0, _alerts.displayNotify)(res.data.status, `Welcome to Natours App, ${username}!`);
+      location.assign('/');
+    }
+  } catch (err) {
+    _alerts.notify.error(err.response.data.message || 'Sign up failed. Please try again!');
+  }
+};
+exports.handleSignUp = handleSignUp;
 const handleLogout = async function () {
   try {
     const res = await (0, _axios.default)({
@@ -6938,6 +6960,7 @@ var _updateSettings = require("./updateSettings");
 /* eslint-disable */
 
 const loginForm = document.querySelector('.form--login');
+const signUpForm = document.querySelector('.form--signup');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const logOutBtn = document.querySelector('.nav__el--logout');
@@ -6954,6 +6977,19 @@ if (loginForm) {
 }
 
 // End Login
+
+// Sign up 
+if (signUpForm) {
+  signUpForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const passwordConfirm = e.target.passwordConfirm.value;
+    (0, _login.handleSignUp)(name, email, password, passwordConfirm);
+  });
+}
+// End sign up 
 
 // Logout
 if (logOutBtn) {

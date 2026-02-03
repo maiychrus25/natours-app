@@ -1118,6 +1118,7 @@ body {
   background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
   opacity: 0.7;
 }
+
 .card__picture-img {
   -o-object-fit: cover;
   object-fit: cover;

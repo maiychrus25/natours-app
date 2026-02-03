@@ -8,7 +8,7 @@ block append head
 block content 
   section.section-header
     .header__here-overlay &nbsp;
-    img.header__hero-img(src=`/img/tours/${tour.imageCover}` alt=`${tour.name}`)
+    img.header__hero-img(src=`${tour.imageCover}` alt=`${tour.name}`)
     
     .heading-box
       h1.heading-primary
@@ -41,7 +41,7 @@ block content
 
             each guide in tour.guides
               .overview-box__detail
-                img.overview-box__img(src=`/img/users/${guide.photo}` alt=`${guide.name}`)
+                img.overview-box__img(src=`${guide.photo}` alt=`${guide.name}`)
 
                 - if (guide.role === 'lead-guide')
                   span.overview-box__label Lead Guide
@@ -61,7 +61,7 @@ block content
   section.section-pictures
     each image, idx in tour.images
       .picture-box
-        img.picture-box__img(class=`picture-box__img--${idx + 1}` src=`/img/tours/${image}` alt=`${tour.name} Tour ${idx + 1}`)
+        img.picture-box__img(class=`picture-box__img--${idx + 1}` src=`${image}` alt=`${tour.name} Tour ${idx + 1}`)
 
   section.section-map
     #map(data-locations=`${JSON.stringify(tour.locations)}`)
@@ -76,8 +76,8 @@ block content
       .cta__img.cta__img--logo
         img(src="/img/logo-white.png" alt="Natours logo")
 
-      img.cta__img(class="cta__img--1" src=`/img/tours/${tour.images[1]}` alt="Tour picture") 
-      img.cta__img(class="cta__img--2" src=`/img/tours/${tour.images[2]}` alt="Tour picture") 
+      img.cta__img(class="cta__img--1" src=`${tour.images[1]}` alt="Tour picture") 
+      img.cta__img(class="cta__img--2" src=`${tour.images[2]}` alt="Tour picture") 
       
       .cta__content
         h2.heading-secondary What are you waiting for?

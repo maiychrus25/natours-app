@@ -1,0 +1,26 @@
+extends base
+
+block content
+  main.main
+    .login-form 
+      h2.heading-secondary.ma-bt-lg Create your account!
+      form.form.form--signup 
+        .form__group 
+          label.form__label(for="name") Your name
+          input#name.name.form__input(name="name" type="text" required minlength="6")
+
+        .form__group 
+          label.form__label(for="email") Email address 
+          input#email.email.form__input(name="email" type="email" placeholder="you@example.com" required)
+
+        .form__group.ma-bt-md 
+          label.form__label(for="password") Password 
+          input#password.password.form__input(name="password" type="password" placeholder="••••••••" required minlength="8")
+
+        .form__group.ma-bt-md 
+          label.form__label(for="password-confirm") Password 
+          input#password-confirm.passwordConfirm.form__input(name="passwordConfirm" type="password" placeholder="••••••••" required minlength="8")
+
+        .form__group
+          button.btn.btn--green Sign up 
+          a.btn.btn--white(href="/api/v1/auth/google") Sign up with Google

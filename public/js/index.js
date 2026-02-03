@@ -1,10 +1,11 @@
 /* eslint-disable */
 import './alerts';
 import { displayMap } from './mapbox';
-import { handleLogin, handleLogout } from './login';
+import { handleLogin, handleSignUp, handleLogout } from './login';
 import { handleUpdateAccount } from './updateSettings';
 
 const loginForm = document.querySelector('.form--login');
+const signUpForm = document.querySelector('.form--signup');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const logOutBtn = document.querySelector('.nav__el--logout');
@@ -23,6 +24,21 @@ if (loginForm) {
 }
 
 // End Login
+
+// Sign up 
+if (signUpForm) {
+  signUpForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+  
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    const passwordConfirm = e.target.passwordConfirm.value;
+
+    handleSignUp(name, email, password, passwordConfirm);
+  });
+}
+// End sign up 
 
 // Logout
 if (logOutBtn) {

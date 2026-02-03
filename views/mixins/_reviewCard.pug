@@ -1,7 +1,7 @@
 mixin reviewCard(name, photo, review, rating)
   .reviews__card
     .reviews__avatar
-      img.reviews__avatar-img(src=`/img/users/${photo}` alt=`${name}`)
+      img.reviews__avatar-img(src=`${photo}` alt=`${name}`)
       h6.reviews__user= name 
     p.reviews__text= review 
 

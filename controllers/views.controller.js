@@ -37,3 +37,8 @@ exports.renderAccount = catchAsync(async (req, res) => {
   });
 });
 
+exports.renderSignUp = (req, res) => {
+  res.status(httpStatus.OK).render('signup', {
+    title: 'Create your account!'
+  });
+};
