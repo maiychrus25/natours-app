@@ -1,10 +1,9 @@
-const crypto = require('crypto');
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const AppError = require('../utils/appError');
 const userService = require('./user.service');
 const tokenService = require('./token.service');
-const sendEmail = require('../utils/mailtrap');
+const Email = require('../utils/mailtrap');
 
 /**
  * Create a user
@@ -53,16 +52,11 @@ exports.forgotPassword = async (email, resetURL) => {
   const resetPasswordToken = user.createResetPasswordToken();
   await user.save({ validateBeforeSave: false });
 
-  // 3) Send it to user's email
   resetURL = resetURL.replace('<RESET_TOKEN>', resetPasswordToken);
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forgot your password, please ignore this email!`;
 
+  // 3) Send it to user's email
   try {
-    await sendEmail({
-      email: email,
-      subject: 'Your password reset token (valid for 10 min)!',
-      message: message,
-    });
+    await new Email(user, resetURL).sendPasswordReset();
   } catch (err) {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
