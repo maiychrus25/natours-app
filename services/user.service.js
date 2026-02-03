@@ -47,6 +47,7 @@ exports.updateMeInfo = async (userId, data) => {
     );
   }
 
+  console.log(data);
   // 2) Update user document
   const filteredData = filterObj(data, 'name', 'email', 'photo');
 

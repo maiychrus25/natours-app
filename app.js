@@ -44,7 +44,8 @@ app.use(
         scriptSrc: [
           "'self'",
           "https://api.mapbox.com",
-          "https://cdn.jsdelivr.net"
+          "https://cdn.jsdelivr.net",
+          "https://unpkg.com"
         ],
 
         styleSrc: [
@@ -52,7 +53,8 @@ app.use(
           "https://api.mapbox.com",
           "https://fonts.googleapis.com",
           "'unsafe-inline'", // ⚠️ BẮT BUỘC cho Mapbox
-          "https://cdn.jsdelivr.net"
+          "https://cdn.jsdelivr.net",
+          "https://unpkg.com",
         ],
 
         imgSrc: [
@@ -71,15 +73,24 @@ app.use(
 
         connectSrc: [
           "'self'",
+          "blob:",
           "https://api.mapbox.com",
           "https://events.mapbox.com",
           "https://cdn.jsdelivr.net",
-          "ws://localhost:*"
+          "ws://localhost:*",
+          "https://res.cloudinary.com",
         ],
 
         workerSrc: [
           "'self'",
           "blob:" // ⚠️ BẮT BUỘC cho Mapbox
+        ],
+
+        mediaSrc: [
+          "'self'",
+          "blob:",
+          "data:",
+          "https://res.cloudinary.com"
         ]
       }
     }

@@ -35,7 +35,8 @@ block content
 
             .form__group.form__photo-upload
               img.form__user-photo(src=`${user.photo}` alt=`${user.photo}`)
-              a.btn-text(href="") Choose new photo 
+              input.form__upload(name="photo" id="photo" type="file" accept="image/*")
+              label(for="photo") Choose new photo
 
             .form__group.right
               button.btn.btn--small.btn--green Save settings 

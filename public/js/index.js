@@ -10,6 +10,23 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
+const photoInput = document.querySelector('#photo');
+const photoPreview = document.querySelector('.form__user-photo');
+
+// Preview photo 
+if (photoInput && photoPreview) {
+  photoInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        photoPreview.src = event.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  }); 
+}
+// End preview photo
 
 // Login 
 if (loginForm) {
@@ -38,6 +55,7 @@ if (signUpForm) {
     handleSignUp(name, email, password, passwordConfirm);
   });
 }
+
 // End sign up 
 
 // Logout
@@ -49,13 +67,19 @@ if (logOutBtn) {
 
 // Update user data 
 if (userDataForm) {
-  userDataForm.addEventListener('submit', (e) => {
+    userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const name = e.target.name.value;
     const email = e.target.email.value;
+    const photo = e.target.photo.files[0];
 
-    handleUpdateAccount({ name, email }, 'account');
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('photo', photo);
+
+    handleUpdateAccount(formData, 'account');
   });
 }
 
