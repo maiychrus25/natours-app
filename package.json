@@ -63,7 +63,7 @@
     "prettier": "^3.6.2"
   },
   "engines": {
-    "node": "18.x"
+    "node": ">=20"
   },
   "browserslist": [
     ">0.5%",
@@ -71,3 +71,4 @@
     "not ie 11"
   ]
 }
+
