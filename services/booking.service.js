@@ -1,7 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tour.model');
 
-exports.getCheckoutSession = async (tourId, email, protocol, host) => {
+exports.getCheckoutSession = async (tourId, user, protocol, host) => {
   // 1) Get the currently booked tour 
   const tour = await Tour.findById(tourId);
 
@@ -9,8 +9,8 @@ exports.getCheckoutSession = async (tourId, email, protocol, host) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     success_url: `${protocol}://${host}/`,
-    cancel_url: `${protocol}://${host}/tour/${tour.slug}`,
-    customer_email: email,
+    cancel_url: `${protocol}://${host}/tour/${tour.slug}/?tour=${tourId}&user=${user.id}&price=${tour.price}`,
+    customer_email: user.email,
     client_reference_id: tourId,
     line_items: [ 
       {
@@ -32,3 +32,4 @@ exports.getCheckoutSession = async (tourId, email, protocol, host) => {
   // 3) Create session as response
   return session;
 }
+

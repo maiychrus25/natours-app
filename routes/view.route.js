@@ -1,5 +1,6 @@
 const express = require('express');
 const viewsController = require('../controllers/views.controller');
+const bookingController = require('../controllers/booking.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = express.Router();
@@ -12,6 +13,10 @@ router.get('/tour/:slug', authMiddleware.isLoggedIn, viewsController.renderTour)
 
 router.get('/me', authMiddleware.auth(), viewsController.renderAccount);
 
-router.get('/', authMiddleware.isLoggedIn, viewsController.renderOverview);
+router.get('/', 
+  bookingController.createBookingCheckout,
+  authMiddleware.isLoggedIn, 
+  viewsController.renderOverview
+);
 
 module.exports = router;
