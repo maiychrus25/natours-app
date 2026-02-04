@@ -14,3 +14,8 @@ exports.aliasTopTours = (req, res, next) => {
   req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 };
+
+exports.setBookingUserId = (req, res, next) => {
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+}

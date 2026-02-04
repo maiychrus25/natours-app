@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tour.model');
+const Booking = require('../models/booking.model');
 
 exports.getCheckoutSession = async (tourId, user, protocol, host) => {
   // 1) Get the currently booked tour 
@@ -33,3 +34,28 @@ exports.getCheckoutSession = async (tourId, user, protocol, host) => {
   return session;
 }
 
+exports.createBooking = async (data) => {
+  const booking = await Booking.create(data);
+  return booking;
+}
+
+exports.getBookings = async () => {
+  const bookings = await Booking.find();
+  return bookings;
+}
+
+exports.getBooking = async (bookingId) => {
+  const booking = await Booking.findById(bookingId);
+  return booking;
+}
+
+exports.updateBooking = async (bookingId) => {
+  const booking = await Booking.findByIdAndUpdate(bookingId, 
+    { new: true, runValidators: true }
+  );
+  return booking;
+}
+
+exports.deleteBooking = async (bookingId) => {
+  await Booking.findByIdAndDelete(bookingId);
+}
