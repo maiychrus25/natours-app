@@ -1,6 +1,7 @@
 const express = require('express');
 const reviewController = require('../controllers/review.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
+const tourMiddleware = require('../middlewares/tour.middleware');
 
 // Each route not can access to params another router 
 // --> mergeParams allow it.
@@ -11,7 +12,7 @@ const router = express.Router({ mergeParams: true });
 
 router.route('/')
   .get(reviewController.getReviews)
-  .post(authMiddleware.auth(), reviewController.setUserTourIds, reviewController.createReview)
+  .post(authMiddleware.auth(), tourMiddleware.canReviewTour, reviewController.setUserTourIds, reviewController.createReview)
 
 router.route('/:id')
   .get(reviewController.getReview)
