@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# portable, can run on render linux
+set -o errexit
+set -o nounset
+
+# bật corepack (Render có sẵn)
+corepack enable
+
+# kích hoạt đúng yarn version
+corepack prepare yarn@4.11.0 --activate
+
+# cài dependencies (không cho thay đổi lockfile)
+yarn install --immutable
+
+# Build commands set to this
+# npm install -g corepack && corepack enable && yarn set version 4.11.0 && yarn install &&  yarn start:prod 

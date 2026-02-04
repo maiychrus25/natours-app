@@ -1,4 +1,6 @@
 {
+  "private": "true",
+  "packageManager": "yarn@4.11.0",
   "name": "natours",
   "version": "1.0.0",
   "main": "app.js",
@@ -61,7 +63,7 @@
     "prettier": "^3.6.2"
   },
   "engines": {
-    "node": ">=8.3.0"
+    "node": "18.x"
   },
   "browserslist": [
     ">0.5%",
