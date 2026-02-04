@@ -20,6 +20,18 @@ Dự án này không chỉ dừng lại ở các chức năng cơ bản mà tậ
   - `LimitFields`: Giới hạn trường trả về (Projecting).
   - `Paginate`: Phân trang dữ liệu.
 
+## Các chức năng chính
+
+- **Quản lý Tours:** CRUD (Tạo, Đọc, Cập nhật, Xóa) cho các tour.
+- **Quản lý Users:** Đăng ký, đăng nhập, quản lý thông tin cá nhân, phân quyền.
+- **Quản lý Reviews:** Người dùng đã đặt tour có thể tạo, đọc, cập nhật, xóa đánh giá.
+- **Xác thực & Phân quyền:** Sử dụng JWT và phân quyền theo vai trò (user, guide, lead-guide, admin).
+- **Thanh toán:** Tích hợp với Stripe để xử lý thanh toán online.
+- **Upload ảnh:** Hỗ trợ upload ảnh cho tour và avatar người dùng, lưu trữ trên Cloudinary.
+- **Gửi Email:** Gửi email tự động (chào mừng, reset mật khẩu) qua SendGrid (production) và Mailtrap (development).
+- **Tính năng API nâng cao:** Lọc, sắp xếp, giới hạn trường, phân trang.
+- **Truy vấn địa lý (Geospatial Queries):** Tìm tour trong một bán kính nhất định.
+
 ### 🛡️ Bảo mật & An toàn (Security & Safety)
 - **Authentication**: Xác thực người dùng bằng **JWT (JSON Web Token)** và **Passport**.
 - **Security Headers**: Sử dụng **Helmet** để thiết lập các HTTP headers an toàn.
@@ -44,14 +56,35 @@ Dự án này không chỉ dừng lại ở các chức năng cơ bản mà tậ
 
 ## 🛠️ Công nghệ sử dụng
 
-| Category | Technology |
-|----------|------------|
-| **Core** | Node.js, Express.js |
-| **Database** | MongoDB, Mongoose |
-| **Auth** | JWT, Passport, Bcrypt |
-| **Email** | Mailtrap (Dev), Nodemailer |
-| **Security** | Helmet, XSS-Clean, HPP, Rate-Limit, Mongo-Sanitize |
-| **Utilities** | Multer (Upload), Sharp (Image Process) |
+- **Backend:**
+  - [Node.js](https://nodejs.org/): Môi trường chạy JavaScript phía server.
+  - [Express.js](https://expressjs.com/): Framework xây dựng ứng dụng web và API.
+- **Database:**
+  - [MongoDB](https://www.mongodb.com/): Cơ sở dữ liệu NoSQL.
+  - [Mongoose](https://mongoosejs.com/): ODM (Object Data Modeling) cho MongoDB.
+- **Authentication / Authorization:**
+  - [JSON Web Tokens (JWT)](https://jwt.io/): Xác thực người dùng.
+  - [Passport.js](http://www.passportjs.org/): Middleware xác thực cho Node.js (bao gồm cả Google OAuth).
+  - [bcryptjs](https://www.npmjs.com/package/bcryptjs): Băm mật khẩu.
+- **Các thư viện quan trọng:**
+  - `dotenv`: Quản lý biến môi trường.
+  - `helmet`, `xss-clean`, `hpp`, `express-mongo-sanitize`, `express-rate-limit`: Bảo mật ứng dụng Express.
+  - `nodemailer`: Gửi email.
+  - `multer`, `cloudinary`, `sharp`: Xử lý upload và tối ưu hóa hình ảnh.
+  - `slugify`: Tạo slug thân thiện với SEO.
+  - `validator`: Validate dữ liệu đầu vào.
+  - `pug`: Template engine để render các trang phía server (chủ yếu cho email).
+  - `parcel-bundler`: Build các file JavaScript phía client.
+
+## Yêu cầu hệ thống
+- **Node.js:** `>=20.0.0`
+- **Package Manager:** `yarn` (dựa trên sự tồn tại của `yarn.lock`)
+- **Database:** MongoDB
+- **Các service bên thứ ba:**
+  - Tài khoản [Cloudinary](https://cloudinary.com/) để lưu trữ ảnh.
+  - Tài khoản [SendGrid](https://sendgrid.com/) (cho production) hoặc [Mailtrap](https://mailtrap.io/) (cho development) để gửi email.
+  - Tài khoản [Stripe](https://stripe.com/) để xử lý thanh toán.
+  - Tài khoản [Mapbox](https://www.mapbox.com/) để hiển thị bản đồ.
 
 ## 🚀 Cài đặt và Chạy ứng dụng
 
@@ -71,57 +104,64 @@ yarn install
 ### 3. Cấu hình biến môi trường
 Đổi tên file `example.env` thành `config.env` (hoặc `.env` tùy cấu hình server.js) và điền thông tin:
 
-```env
-PORT=3000
-DATABASE=mongodb+srv://<USER>:<PASSWORD>@cluster.mongodb.net/natours?retryWrites=true&w=majority
-DATABASE_PASSWORD=your_password
+Đây là danh sách các biến môi trường cần thiết để chạy ứng dụng.
 
-JWT_SECRET=your-ultra-long-secret-key
-JWT_EXPIRES_IN=90d
-JWT_COOKIE_EXPIRES_IN=90
+| Biến                    | Mô tả                                                      | Ví dụ                                                       |
+| ----------------------- | ---------------------------------------------------------- | ----------------------------------------------------------- |
+| `NODE_ENV`              | Môi trường chạy ứng dụng (`development` hoặc `production`) | `development`                                               |
+| `PORT`                  | Cổng server lắng nghe                                      | `4000`                                                      |
+| `DATABASE`              | Chuỗi kết nối đến MongoDB                                  | `mongodb+srv://user:<PASSWORD>@cluster.mongodb.net/natours` |
+| `DATABASE_PASSWORD`     | Mật khẩu database để thay thế vào chuỗi `DATABASE`         | `your-db-password`                                          |
+| `JWT_SECRET_KEY`        | Chuỗi bí mật để ký JWT                                     | `a-very-long-and-secret-key-for-jwt`                        |
+| `JWT_EXPIRES_IN`        | Thời gian hết hạn của JWT                                  | `90d`                                                       |
+| `JWT_COOKIE_EXPIRES_IN` | Thời gian hết hạn của cookie chứa JWT (tính bằng ngày)     | `90`                                                        |
+| `EMAIL_FROM`            | Địa chỉ email gửi đi                                       | `Natours Admin <admin@natours.io>`                          |
+| `MAILTRAP_HOST`         | Host của Mailtrap (cho development)                        | `smtp.mailtrap.io`                                          |
+| `MAILTRAP_PORT`         | Port của Mailtrap (cho development)                        | `2525`                                                      |
+| `MAILTRAP_USER`         | Username của Mailtrap (cho development)                    | `your-mailtrap-user`                                        |
+| `MAILTRAP_PASS`         | Password của Mailtrap (cho development)                    | `your-mailtrap-pass`                                        |
+| `SENDGRID_USERNAME`     | Username của SendGrid (cho production)                     | `apikey`                                                    |
+| `SENDGRID_PASSWORD`     | Password (API Key) của SendGrid (cho production)           | `your-sendgrid-api-key`                                     |
+| `CLOUDINARY_CLOUD_NAME` | Tên cloud của Cloudinary                                   | `your-cloud-name`                                           |
+| `CLOUDINARY_API_KEY`    | API key của Cloudinary                                     | `your-api-key`                                              |
+| `CLOUDINARY_API_SECRET` | API secret của Cloudinary                                  | `your-api-secret`                                           |
+| `STRIPE_SECRET_KEY`     | Khóa bí mật của Stripe                                     | `sk_test_...`                                               |
+| `GOOGLE_CLIENT_ID`      | Client ID cho Google OAuth                                 | `your-google-client-id`                                     |
+| `GOOGLE_CLIENT_SECRET`  | Client Secret cho Google OAuth                             | `your-google-client-secret`                                 |
 
-EMAIL_USERNAME=your_mailtrap_username
-EMAIL_PASSWORD=your_mailtrap_password
-EMAIL_HOST=sandbox.smtp.mailtrap.io
-EMAIL_PORT=2525
-```
+### 4. Scripts
 
-### 4. Chạy ứng dụng
+Các scripts được định nghĩa trong `package.json`:
 
-Chạy môi trường Development (với Nodemon):
-```bash
-yarn dev
-```
-
-Chạy môi trường Production:
-```bash
-yarn start:prod
-```
+| Script       | Mô tả                                                              |
+| ------------ | ------------------------------------------------------------------ |
+| `start`      | Chạy server ở chế độ development bằng `nodemon` (tự động restart). |
+| `start:prod` | Chạy server ở chế độ production.                                   |
+| `lint`       | Kiểm tra lỗi code bằng ESLint.                                     |
+| `debug`      | Chạy server ở chế độ debug bằng `ndb`.                             |
+| `watch:js`   | Theo dõi và build lại file JS phía client khi có thay đổi.         |
+| `build:js`   | Build file JS phía client cho production.                          |
 
 ## 📂 Cấu trúc dự án
 
-Cấu trúc thư mục được tổ chức khoa học để dễ dàng mở rộng (Scalability):
-
-```text
-.
-├── config/                 # Các file cấu hình hệ thống
-├── controllers/            # Xử lý request, gọi Service
-│   ├── error.controller.js # Xử lý lỗi trung tâm
-│   └── handlerFactory.js   # Factory pattern cho CRUD
-├── dev-data/               # Dữ liệu mẫu để import/export
-├── middlewares/            # Custom middlewares
-├── models/                 # Mongoose Schemas & Statics & Hooks
-├── public/                 # File tĩnh (HTML, CSS, Img)
-├── routes/                 # Định nghĩa API Endpoints
-├── services/               # Logic nghiệp vụ (Base Service)
-├── utils/                  # Các hàm tiện ích
-│   ├── apiFeatures.js      # Class xử lý Filter, Sort, Page
-│   ├── appError.js         # Class lỗi tùy chỉnh
-│   └── catchAsync.js       # Wrapper async/await
-├── views/                  # Server-side rendering (nếu có dùng Pug)
-├── app.js                  # Khởi tạo Express App & Middlewares
-├── server.js               # Entry point, kết nối DB
-└── ...
+```
+/
+├── app.js              # Cấu hình chính của Express, middleware
+├── server.js           # Điểm khởi động server, kết nối database
+├── package.json        # Danh sách các dependencies và scripts
+├── .env.example        # File mẫu cho các biến môi trường
+├── .prettierrc         # Cấu hình Prettier
+├── .eslintrc.json      # Cấu hình ESLint
+│
+├── config/             # Chứa các file cấu hình (database, passport)
+├── controllers/        # Chứa logic xử lý request (controller layer)
+├── middlewares/        # Chứa các Express middleware tùy chỉnh
+├── models/             # Định nghĩa Mongoose schema (data layer)
+├── routes/             # Định tuyến các endpoint của API
+├── services/           # Chứa logic nghiệp vụ (business logic layer)
+├── utils/              # Chứa các hàm, lớp tiện ích (email, error handling)
+├── public/             # Chứa các file tĩnh (CSS, JS, images)
+└── views/              # Chứa các template Pug (chủ yếu cho email)
 ```
 
 ## 📝 API Endpoints chính
@@ -133,10 +173,11 @@ Cấu trúc thư mục được tổ chức khoa học để dễ dàng mở r�
 | POST | `/api/v1/users/login` | Đăng nhập hệ thống |
 | POST | `/api/v1/users/forgot-password` | Gửi email reset token |
 | PATCH | `/api/v1/users/reset-password/:token` | Đặt lại mật khẩu |
+| GET | `/api/v1/tours/tours-within/200/center/34.111745,-118.113491/unit/mi` | Lấy các tour quanh bán kính |
 
 ## 📘 API Documentation
 
-The Natours API is fully documented using Postman public documentation.
+Tài liệu Natours API sử dụng Postman public document.
 
 👉 View full API docs here:  
 🔗 [Postman Docs](https://documenter.getpostman.com/view/43579262/2sBXVo9TLX)
