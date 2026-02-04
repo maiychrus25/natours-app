@@ -7,7 +7,7 @@ exports.renderOverview = catchAsync(async (req, res, next) => {
   const tours = await tourService.getTours({ ...req.query, limit: 10 });
 
   res.status(httpStatus.OK).render('overview', {
-    title: 'All tours',
+    title: 'All Tours',
     tours: tours
   });
 });
@@ -34,6 +34,15 @@ exports.renderLogin = (req, res) => {
 exports.renderAccount = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).render('account', {
     title: 'My account'
+  });
+});
+
+exports.renderMyTours = catchAsync(async (req, res) => {
+  const tours = await tourService.getMyTours(req.user.id); 
+
+  res.status(httpStatus.OK).render('overview', {
+    title: 'My Tours',
+    tours
   });
 });
 

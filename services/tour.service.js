@@ -1,4 +1,5 @@
 const Tour = require('../models/tour.model');
+const Booking = require('../models/booking.model');
 const Review = require('../models/review.model');
 const baseService = require('./base.service');
 
@@ -7,6 +8,19 @@ exports.getTour = baseService.getOne(Tour, { path: 'reviews', select: '-__v' });
 exports.createTour = baseService.createOne(Tour); 
 exports.updateTour = baseService.updateOne(Tour);
 exports.deleteTour = baseService.deleteById(Tour); 
+
+exports.getMyTours = async (userId) => {
+  // 1) Find all bookings
+  const bookings = await Booking.find({ user: userId });
+  
+  // 2) Find tours with the returnd IDs
+  const tourIDs = bookings.map(el => el.tour);
+  const tours = await Tour.find({ _id: {
+    $in: tourIDs
+  }});
+
+  return tours;
+}
 
 exports.getTourBySlug = async (slug) => {
   const tour = await Tour.findOne({ slug: slug }).populate({ path: 'reviews' });

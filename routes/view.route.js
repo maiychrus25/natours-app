@@ -13,6 +13,8 @@ router.get('/tour/:slug', authMiddleware.isLoggedIn, viewsController.renderTour)
 
 router.get('/me', authMiddleware.auth(), viewsController.renderAccount);
 
+router.get('/my-tours', authMiddleware.auth(), viewsController.renderMyTours);
+
 router.get('/', 
   bookingController.createBookingCheckout,
   authMiddleware.isLoggedIn, 
