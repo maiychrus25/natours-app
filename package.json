@@ -9,7 +9,7 @@
   "description": "Learning node, express and mongoDB",
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "cross-env NODE_ENV=production node server.js",
+    "start:prod": "NODE_ENV=production node server.js",
     "lint": "eslint . --ext .js",
     "debug": "ndb server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --no-hmr",
@@ -71,4 +71,5 @@
     "not ie 11"
   ]
 }
+
 
