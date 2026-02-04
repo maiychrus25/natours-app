@@ -8,7 +8,7 @@ set -o nounset
 corepack enable
 
 # kích hoạt đúng yarn version
-corepack prepare yarn@4.11.0 --activate
+corepack prepare yarn@1.22.22 --activate
 
 # cài dependencies (không cho thay đổi lockfile)
 yarn install --immutable
