@@ -17,8 +17,9 @@ const globalErrorHandle = require('./services/error.service');
 const tourRoutes = require('./routes/tour.route');
 const userRoutes = require('./routes/user.route');
 const reviewRoutes = require('./routes/review.route');
-const viewRoutes = require('./routes/view.route');
+const bookingRoutes = require('./routes/booking.route');
 const authRoutes = require('./routes/auth.route');
+const viewRoutes = require('./routes/view.route');
 
 const app = express();
 
@@ -45,7 +46,8 @@ app.use(
           "'self'",
           "https://api.mapbox.com",
           "https://cdn.jsdelivr.net",
-          "https://unpkg.com"
+          "https://unpkg.com",
+          "https://js.stripe.com",
         ],
 
         styleSrc: [
@@ -91,6 +93,11 @@ app.use(
           "blob:",
           "data:",
           "https://res.cloudinary.com"
+        ],
+        
+        frameSrc: [
+          "'self'",
+          "https://js.stripe.com",
         ]
       }
     }
@@ -152,6 +159,7 @@ app.use('/', viewRoutes);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/auth/google', authRoutes);
 
 // ============================

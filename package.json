@@ -43,6 +43,7 @@
     "regenerator-runtime": "^0.14.1",
     "sharp": "^0.34.5",
     "slugify": "^1.6.6",
+    "stripe": "^20.3.0",
     "validator": "^13.15.15",
     "xss-clean": "^0.1.4"
   },
@@ -71,5 +72,3 @@
     "not ie 11"
   ]
 }
-
-

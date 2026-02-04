@@ -3,6 +3,7 @@ import './alerts';
 import { displayMap } from './mapbox';
 import { handleLogin, handleSignUp, handleLogout } from './login';
 import { handleUpdateAccount } from './updateSettings';
+import { bookTour } from './stripe';
 
 const loginForm = document.querySelector('.form--login');
 const signUpForm = document.querySelector('.form--signup');
@@ -12,6 +13,7 @@ const logOutBtn = document.querySelector('.nav__el--logout');
 const mapContainer = document.getElementById('map');
 const photoInput = document.querySelector('#photo');
 const photoPreview = document.querySelector('.form__user-photo');
+const bookBtn = document.querySelector('#book-tour');
 
 // Preview photo 
 if (photoInput && photoPreview) {
@@ -111,3 +113,13 @@ if (mapContainer) {
 }
 
 // End Mapbox
+
+// Book tour 
+if (bookBtn) {
+  bookBtn.addEventListener('click', async e => {
+    e.target.textContent = 'Processing...';
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
+  });
+}
+// End book tour
