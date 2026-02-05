@@ -12,10 +12,10 @@
 Dự án này không chỉ dừng lại ở các chức năng cơ bản mà tập trung sâu vào **Architecture Patterns** và **Security Best Practices**:
 
 ### Tài khoản trải nghiệm
-```
+
 **email**: __laura@example.com__
 **pass**: __test1234__
-```
+
 
 ### 🏗️ Kiến trúc & Refactoring (Advanced Patterns)
 - **Factory Pattern**: Sử dụng `handlerFactory` trong Controller để tạo ra các hàm CRUD chuẩn hóa, giúp giảm thiểu code lặp lại.
