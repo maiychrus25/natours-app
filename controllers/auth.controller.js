@@ -16,8 +16,9 @@ exports.authGoogle = (req, res) => {
     maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production',
     // NOTE: must have (OAuth + redirect)
-    sameSite: 'lax'
+    sameSite: (process.env.NODE_ENV === 'development' ? 'lax' : 'none') 
   };
 
   res.cookie("jwt", token, cookieOptions);

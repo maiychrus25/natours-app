@@ -1,7 +1,6 @@
 const path = require('path');
 const httpStatus = require('http-status');
-const express = require('express');
-const morgan = require('morgan');
+const express = require('express'); const morgan = require('morgan');
 
 const helmet = require('helmet');
 const xss = require('xss-clean')
