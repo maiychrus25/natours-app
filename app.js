@@ -87,7 +87,7 @@ app.use(
 
         workerSrc: [
           "'self'",
-          "blob:" // ⚠️ BẮT BUỘC cho Mapbox
+          "blob:" // BẮT BUỘC cho Mapbox
         ],
 
         mediaSrc: [
@@ -102,7 +102,7 @@ app.use(
           "https://*.stripe.com",
         ],
 
-        objectSrc: "none",
+        objectSrc: ["'none'"],
 
         ungradeInsecureRequests: []
       }
@@ -184,3 +184,4 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandle);
 
 module.exports = app;
+
