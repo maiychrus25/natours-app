@@ -102,7 +102,7 @@ app.use(
           "https://*.stripe.com",
         ],
 
-        objectSrc: ["none"],
+        objectSrc: "none",
 
         ungradeInsecureRequests: []
       }
