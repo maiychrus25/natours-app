@@ -39,14 +39,15 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", 'https://*.stripe.com', 'https://*.mapbox.com'],
 
         scriptSrc: [
           "'self'",
           "https://api.mapbox.com",
           "https://cdn.jsdelivr.net",
           "https://unpkg.com",
-          "https://js.stripe.com",
+          "https://*.stripe.com",
+          "https://cdnjs.cloudflare.com"
         ],
 
         styleSrc: [
@@ -56,7 +57,7 @@ app.use(
           "'unsafe-inline'", // BẮT BUỘC cho Mapbox
           "https://cdn.jsdelivr.net",
           "https://unpkg.com",
-          "https://m.stripe.network",
+          "https://*.stripe.network",
           "'sha256-33YGiROm4Pzv0xXIPo82M0Dt2zrdnP4IgbJq1WeAtf8='"
         ],
 
@@ -98,8 +99,12 @@ app.use(
         
         frameSrc: [
           "'self'",
-          "https://js.stripe.com",
-        ]
+          "https://*.stripe.com",
+        ],
+
+        objectSrc: ['none'],
+
+        ungradeInsecureRequests: []
       }
     }
   })
