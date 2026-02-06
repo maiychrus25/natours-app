@@ -53,9 +53,11 @@ app.use(
           "'self'",
           "https://api.mapbox.com",
           "https://fonts.googleapis.com",
-          "'unsafe-inline'", // ⚠️ BẮT BUỘC cho Mapbox
+          "'unsafe-inline'", // BẮT BUỘC cho Mapbox
           "https://cdn.jsdelivr.net",
           "https://unpkg.com",
+          "https://m.stripe.network",
+          "'sha256-33YGiROm4Pzv0xXIPo82M0Dt2zrdnP4IgbJq1WeAtf8='"
         ],
 
         imgSrc: [
