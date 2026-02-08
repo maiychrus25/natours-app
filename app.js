@@ -51,7 +51,7 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
         baseUri: ["'self'"],
         fontSrc: ["'self'", 'https:', 'data:'],
         scriptSrc: [
@@ -59,11 +59,17 @@ app.use(
           'https://*.stripe.com',
           'https://cdnjs.cloudflare.com',
           'https://*.googleapis.com',
+          'https://*.gstatic.com',
         ],
         frameSrc: ["'self'", 'https://*.stripe.com'],
         objectSrc: ["'none'"],
         styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-        upgradeInsecureRequests: [],
+        workerSrc: ["'self'", 'data:', 'blob:'],
+        childSrc: ["'self'", 'blob:'],
+        imgSrc: ["'self'", 'data:', 'blob:'],
+        connectSrc: ["'self'", 'https:', 'http:', 'ws:'],
+        // Fix is right here: change [] to null
+        upgradeInsecureRequests: null,
       },
     },
   }),
