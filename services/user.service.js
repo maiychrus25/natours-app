@@ -13,8 +13,8 @@ const filterObj = (obj, ...allowedFields) => {
   }, {});
 };
 
-exports.getUsers = baseService.getAll(User); 
-exports.getUser = baseService.getOne(User); 
+exports.getUsers = baseService.getAll(User);
+exports.getUser = baseService.getOne(User);
 
 exports.getUserByEmail = async (email) => {
   const user = await User.findOne({ email: email }).select('+password');
@@ -29,9 +29,9 @@ exports.getUserByToken = async (token) => {
   return user;
 };
 
-exports.createUser = baseService.createOne(User); 
+exports.createUser = baseService.createOne(User);
 
-exports.updateUser = baseService.updateOne(User); 
+exports.updateUser = baseService.updateOne(User);
 
 /**
  * Update a current user info
@@ -47,7 +47,6 @@ exports.updateMeInfo = async (userId, data) => {
     );
   }
 
-  console.log(data);
   // 2) Update user document
   const filteredData = filterObj(data, 'name', 'email', 'photo');
 

@@ -1,12 +1,14 @@
 const path = require('path');
 const httpStatus = require('http-status');
-const express = require('express'); const morgan = require('morgan');
+const express = require('express');
+const morgan = require('morgan');
 
 const helmet = require('helmet');
-const xss = require('xss-clean')
-const hpp = require('hpp')
-const mongoSanitize = require('express-mongo-sanitize')
+const xss = require('xss-clean');
+const hpp = require('hpp');
+const mongoSanitize = require('express-mongo-sanitize');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const passport = require('./config/passport');
 const { globalLimiter } = require('./middlewares/rateLimiter.middleware');
@@ -27,7 +29,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // =====================================
-// 1. GLOBAL MIDDLEWARE:              # 
+// 1. GLOBAL MIDDLEWARE:              #
 // ====================================
 
 // Serving static files
@@ -35,88 +37,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP Headers
 // Giup che giau thong tin server va ngan chan cac ma doc
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'", 'https://*.stripe.com', 'https://*.mapbox.com'],
-
-        scriptSrc: [
-          "'self'",
-          "https://api.mapbox.com",
-          "https://cdn.jsdelivr.net",
-          "https://unpkg.com",
-          "https://*.stripe.com",
-          "https://cdnjs.cloudflare.com"
-        ],
-
-        styleSrc: [
-          "'self'",
-          "https://api.mapbox.com",
-          "https://fonts.googleapis.com",
-          "'unsafe-inline'", // BẮT BUỘC cho Mapbox
-          "https://cdn.jsdelivr.net",
-          "https://unpkg.com",
-          "https://*.stripe.network",
-          "'sha256-33YGiROm4Pzv0xXIPo82M0Dt2zrdnP4IgbJq1WeAtf8='"
-        ],
-
-        imgSrc: [
-          "'self'",
-          "data:",
-          "blob:",
-          "https://api.mapbox.com",
-          "https://res.cloudinary.com",
-          "https://lh3.googleusercontent.com",
-        ],
-
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com"
-        ],
-
-        connectSrc: [
-          "'self'",
-          "blob:",
-          "https://api.mapbox.com",
-          "https://events.mapbox.com",
-          "https://cdn.jsdelivr.net",
-          "ws://localhost:*",
-          "https://res.cloudinary.com",
-        ],
-
-        workerSrc: [
-          "'self'",
-          "blob:" // ⚠️ BẮT BUỘC cho Mapbox
-        ],
-
-        mediaSrc: [
-          "'self'",
-          "blob:",
-          "data:",
-          "https://res.cloudinary.com"
-        ],
-        
-        frameSrc: [
-          "'self'",
-          "https://*.stripe.com",
-        ],
-
-        objectSrc: "none",
-
-        ungradeInsecureRequests: []
-      }
-    }
-  })
-);
-
+app.use(helmet());
 
 // 1) Cau hinh trust proxy (rat qun trong khi deploy len heroku, vercel, AWS, ...)
-// Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user 
+// Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user
 app.set('trust proxy', 1);
 app.use('/api', globalLimiter);
 
-// Development logging 
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -128,14 +56,14 @@ app.use(cookieParser());
 
 // Data sanitization against NoSQL injection
 // Example: '$', { email: { $gt: '' }}
-app.use(mongoSanitize())
+app.use(mongoSanitize());
 
 // Data Sanitization against XSS Attack
-app.use(xss())
+app.use(xss());
 
 // Prevent parameter pollution
 // Ngan chan loi khi user gui 2 tham so giong nhau(Ex: ?sort=duration&sort=price)
-/// whitelist: cac tham so cho phep trung lap 
+/// whitelist: cac tham so cho phep trung lap
 app.use(
   hpp({
     whitelist: [
@@ -144,10 +72,12 @@ app.use(
       'ratingsQuantity',
       'maxGroupSize',
       'difficulty',
-      'price'
+      'price',
     ],
-  })
+  }),
 );
+
+app.use(compression());
 
 // ===============================
 // 2. AUTHENTICATION CONFIG      =
@@ -184,3 +114,60 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandle);
 
 module.exports = app;
+
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         defaultSrc: ["'self'", "https://*.stripe.com", "https://*.mapbox.com"],
+//
+//         scriptSrc: [
+//           "'self'",
+//           "https://api.mapbox.com",
+//           "https://cdn.jsdelivr.net",
+//           "https://unpkg.com",
+//           "https://*.stripe.com",
+//           "https://cdnjs.cloudflare.com"
+//         ],
+//
+//         styleSrc: [
+//           "'self'",
+//           "https://api.mapbox.com",
+//           "https://fonts.googleapis.com",
+//           "https://cdn.jsdelivr.net",
+//           "https://unpkg.com",
+//           "https://*.stripe.network",
+//           "'unsafe-inline'" // Mapbox cần
+//         ],
+//
+//         imgSrc: [
+//           "'self'",
+//           "data:",
+//           "blob:",
+//           "https://api.mapbox.com",
+//           "https://res.cloudinary.com",
+//           "https://lh3.googleusercontent.com"
+//         ],
+//
+//         fontSrc: ["'self'", "https://fonts.gstatic.com"],
+//
+//         connectSrc: [
+//           "'self'",
+//           "blob:",
+//           "https://api.mapbox.com",
+//           "https://events.mapbox.com",
+//           "https://cdn.jsdelivr.net",
+//           "ws://localhost:*",
+//           "https://res.cloudinary.com"
+//         ],
+//
+//         workerSrc: ["'self'", "blob:"],
+//         mediaSrc: ["'self'", "blob:", "data:", "https://res.cloudinary.com"],
+//         frameSrc: ["'self'", "https://*.stripe.com"],
+//         objectSrc: ["'none'"],
+//         upgradeInsecureRequests: []
+//       }
+//     }
+//   })
+// );
+//
