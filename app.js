@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const mongoSanitize = require('express-mongo-sanitize');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const compression = require('compression');
 const cors = require('cors');
 
@@ -22,6 +23,7 @@ const reviewRoutes = require('./routes/review.route');
 const bookingRoutes = require('./routes/booking.route');
 const authRoutes = require('./routes/auth.route');
 const viewRoutes = require('./routes/view.route');
+const bookingController = require('./controllers/booking.controller');
 
 const app = express();
 
@@ -71,6 +73,11 @@ app.use(
 // Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user
 app.set('trust proxy', 1);
 app.use('/api', globalLimiter);
+app.post(
+  '/webhook-checkout',
+  bodyParser.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
