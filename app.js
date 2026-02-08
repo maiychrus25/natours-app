@@ -47,32 +47,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP Headers
 // Giup che giau thong tin server va ngan chan cac ma doc
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
-        baseUri: ["'self'"],
-        fontSrc: ["'self'", 'https:', 'data:'],
-        scriptSrc: [
-          "'self'",
-          'https://*.stripe.com',
-          'https://cdnjs.cloudflare.com',
-          'https://*.googleapis.com',
-          'https://*.gstatic.com',
-        ],
-        frameSrc: ["'self'", 'https://*.stripe.com'],
-        objectSrc: ["'none'"],
-        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-        workerSrc: ["'self'", 'data:', 'blob:'],
-        childSrc: ["'self'", 'blob:'],
-        imgSrc: ["'self'", 'data:', 'blob:'],
-        connectSrc: ["'self'", 'https:', 'http:', 'ws:'],
-        // CHANGE: Set explicitly to true or remove the line entirely
-      },
-    },
-  }),
-);
 
 // 1) Cau hinh trust proxy (rat qun trong khi deploy len heroku, vercel, AWS, ...)
 // Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user
