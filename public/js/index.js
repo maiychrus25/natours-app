@@ -4,7 +4,7 @@ import { displayMap } from './mapbox';
 import { handleLogin, handleSignUp, handleLogout } from './login';
 import { handleUpdateAccount } from './updateSettings';
 import { bookTour } from './stripe';
-import { displayNotify } from './alerts';
+import { notify } from './alerts';
 
 const loginForm = document.querySelector('.form--login');
 const signUpForm = document.querySelector('.form--signup');
@@ -24,7 +24,7 @@ if (alert) {
 
 // Alert booking tour
 if (alertMessage) {
-  displayNotify('success', alertMessage);
+  notify.success(alertMessage);
 }
 // End alert booking tour
 

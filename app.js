@@ -56,10 +56,12 @@ app.use(
           "'self'",
           'https://api.mapbox.com',
           'https://*.stripe.com',
+          'https://*.stripe.network',
           'https://cdnjs.cloudflare.com',
           'https://cdn.jsdelivr.net',
           'https://unpkg.com',
           "'unsafe-inline'",
+          "'unsafe-eval'"
         ],
         styleSrc: [
           "'self'",
@@ -83,6 +85,7 @@ app.use(
           'blob:',
           'https://*.mapbox.com',
           'https://*.stripe.com',
+          'https://*.stripe.network',
           'https://events.mapbox.com',
           'ws://localhost:*',
         ],
@@ -90,9 +93,15 @@ app.use(
         frameSrc: ["'self'", 'https://*.stripe.com', 'https://*.stripe.network'],
         childSrc: ["'self'", 'blob:'],
         workerSrc: ["'self'", 'blob:'],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'self'"],
         upgradeInsecureRequests: true 
       },
     },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: {
+      policy: "cross-origin"
+    }
   }),
 );
 
