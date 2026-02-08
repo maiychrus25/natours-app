@@ -8,20 +8,20 @@ const router = express.Router();
 router.use(authMiddleware.auth());
 
 router.get(
-  '/checkout-session/:tourId', 
-  authMiddleware.auth(), 
-  bookingController.getCheckoutSession
+  '/checkout-session/:tourId',
+  authMiddleware.auth(),
+  bookingController.getCheckoutSession,
 );
 
 router.use(authMiddleware.restrictTo('admin', 'lead-guide'));
 
-router.route('/:id')
+router
+  .route('/:id')
   .get(bookingController.getBooking)
   .patch(bookingController.updateBooking)
   .delete(bookingController.deleteBooking);
 
-router.route('/')
-  .get(bookingController.getBookings)
-  .post(tourMiddleware.setBookingUserId, bookingController.createBooking);
-  
+router.route('/').get(bookingController.getBookings);
+// .post(tourMiddleware.setBookingUserId, bookingController.createBooking);
+
 module.exports = router;
