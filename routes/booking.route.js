@@ -21,7 +21,9 @@ router
   .patch(bookingController.updateBooking)
   .delete(bookingController.deleteBooking);
 
-router.route('/').get(bookingController.getBookings);
-// .post(tourMiddleware.setBookingUserId, bookingController.createBooking);
+router
+  .route('/')
+  .get(bookingController.getBookings)
+  .post(tourMiddleware.setBookingUserId, bookingController.createBooking);
 
 module.exports = router;
