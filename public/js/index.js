@@ -4,6 +4,7 @@ import { displayMap } from './mapbox';
 import { handleLogin, handleSignUp, handleLogout } from './login';
 import { handleUpdateAccount } from './updateSettings';
 import { bookTour } from './stripe';
+import { displayNotify } from './alerts';
 
 const loginForm = document.querySelector('.form--login');
 const signUpForm = document.querySelector('.form--signup');
@@ -14,8 +15,15 @@ const mapContainer = document.getElementById('map');
 const photoInput = document.querySelector('#photo');
 const photoPreview = document.querySelector('.form__user-photo');
 const bookBtn = document.querySelector('#book-tour');
+const alertMessage = document.querySelector(body).dataset.alert;
 
-// Preview photo 
+// Alert booking tour
+if (alertMessage) {
+  displayNotify('success', alertMessage);
+}
+// End alert booking tour
+
+// Preview photo
 if (photoInput && photoPreview) {
   photoInput.addEventListener('change', function (e) {
     const file = e.target.files[0];
@@ -23,18 +31,18 @@ if (photoInput && photoPreview) {
       const reader = new FileReader();
       reader.onload = function (event) {
         photoPreview.src = event.target.result;
-      }
+      };
       reader.readAsDataURL(file);
     }
-  }); 
+  });
 }
 // End preview photo
 
-// Login 
+// Login
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const email = e.target.email.value;
     const password = e.target.password.value;
 
@@ -44,11 +52,11 @@ if (loginForm) {
 
 // End Login
 
-// Sign up 
+// Sign up
 if (signUpForm) {
   signUpForm.addEventListener('submit', (e) => {
     e.preventDefault();
-  
+
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
@@ -58,7 +66,7 @@ if (signUpForm) {
   });
 }
 
-// End sign up 
+// End sign up
 
 // Logout
 if (logOutBtn) {
@@ -67,9 +75,9 @@ if (logOutBtn) {
 
 // End logout
 
-// Update user data 
+// Update user data
 if (userDataForm) {
-    userDataForm.addEventListener('submit', (e) => {
+  userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const name = e.target.name.value;
@@ -95,7 +103,10 @@ if (userPasswordForm) {
     const password = e.target.password.value;
     const passwordConfirm = e.target.passwordConfirm.value;
 
-    await handleUpdateAccount({ passwordCurrent, password, passwordConfirm }, 'password');
+    await handleUpdateAccount(
+      { passwordCurrent, password, passwordConfirm },
+      'password',
+    );
 
     document.querySelector('#password-current').value = '';
     document.querySelector('#password').value = '';
@@ -106,7 +117,7 @@ if (userPasswordForm) {
 
 // End update user data
 
-// Mapbox 
+// Mapbox
 if (mapContainer) {
   const locations = JSON.parse(mapContainer.dataset.locations);
   displayMap(locations);
@@ -114,9 +125,9 @@ if (mapContainer) {
 
 // End Mapbox
 
-// Book tour 
+// Book tour
 if (bookBtn) {
-  bookBtn.addEventListener('click', async e => {
+  bookBtn.addEventListener('click', async (e) => {
     e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     bookTour(tourId);

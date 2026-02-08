@@ -68,8 +68,8 @@ app.use(
         childSrc: ["'self'", 'blob:'],
         imgSrc: ["'self'", 'data:', 'blob:'],
         connectSrc: ["'self'", 'https:', 'http:', 'ws:'],
-        // Fix is right here: change [] to null
-        upgradeInsecureRequests: null,
+        // CHANGE: Set explicitly to true or remove the line entirely
+        upgradeInsecureRequests: [],
       },
     },
   }),
