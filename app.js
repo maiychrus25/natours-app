@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const mongoSanitize = require('express-mongo-sanitize');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const passport = require('./config/passport');
 const { globalLimiter } = require('./middlewares/rateLimiter.middleware');
@@ -31,13 +32,40 @@ app.set('views', path.join(__dirname, 'views'));
 // =====================================
 // 1. GLOBAL MIDDLEWARE:              #
 // ====================================
+// Implement CORS
+// app.use(cors({
+// origin: "https://www.natours.app"
+// }));
+// Access-Control-Allow-Origin
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors());
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP Headers
 // Giup che giau thong tin server va ngan chan cac ma doc
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        fontSrc: ["'self'", 'https:', 'data:'],
+        scriptSrc: [
+          "'self'",
+          'https://*.stripe.com',
+          'https://cdnjs.cloudflare.com',
+          'https://*.googleapis.com',
+        ],
+        frameSrc: ["'self'", 'https://*.stripe.com'],
+        objectSrc: ["'none'"],
+        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+  }),
+);
 
 // 1) Cau hinh trust proxy (rat qun trong khi deploy len heroku, vercel, AWS, ...)
 // Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user
