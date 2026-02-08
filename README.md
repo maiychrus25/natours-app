@@ -98,7 +98,7 @@ Dự án sử dụng **Yarn** để quản lý gói.
 
 ### 1. Clone dự án
 ```bash
-git clone [https://github.com/maiychrus25/natours-app.git](https://github.com/maiychrus25/natours-app.git)
+git clone https://github.com/maiychrus25/natours-app.git
 cd natours-app
 ```
 
@@ -134,9 +134,9 @@ yarn install
 | `STRIPE_SECRET_KEY`     | Khóa bí mật của Stripe                                     | `sk_test_...`                                               |
 | `GOOGLE_CLIENT_ID`      | Client ID cho Google OAuth                                 | `your-google-client-id`                                     |
 | `GOOGLE_CLIENT_SECRET`  | Client Secret cho Google OAuth                             | `your-google-client-secret`                                 |
-| `STRIPE_PUBLISHIBLE_KEY | Public key cho stripe client                               | `your-stripe-public-key`                                    |
-| `STRIPE_SECRET_KEY      | Secret key cho stripe server                               | `your-stripe-secret-key`                                    |
-| `STRIPE_WEBHOOK_SECRET  | Webhook signature cho stripe                               | `your-webhook-secret-key`                                   |
+| `STRIPE_PUBLISHIBLE_KEY`| Public key cho stripe client                               | `your-stripe-public-key`                                    |
+| `STRIPE_SECRET_KEY`     | Secret key cho stripe server                               | `your-stripe-secret-key`                                    |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signature cho stripe                               | `your-webhook-secret-key`                                   |
 
 ### 4. Scripts
 
