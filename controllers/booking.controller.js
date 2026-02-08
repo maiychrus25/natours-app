@@ -36,9 +36,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
-  const user = await userService.getUserByEmail(session.customer_email);
+  const userObj = await userService.getUserByEmail(session.customer_email);
+  const user = userObj.id;
   const price = session.amount_total / 100;
-  await Booking.create({ tour, user.id, price });
+  await Booking.create({ tour, user, price });
 };
 
 exports.webhookCheckout = async (req, res, next) => {
@@ -52,6 +53,7 @@ exports.webhookCheckout = async (req, res, next) => {
       process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
+    console.log('Webhook Signature Error: ', err.message);
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
