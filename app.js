@@ -69,7 +69,6 @@ app.use(
         imgSrc: ["'self'", 'data:', 'blob:'],
         connectSrc: ["'self'", 'https:', 'http:', 'ws:'],
         // CHANGE: Set explicitly to true or remove the line entirely
-        upgradeInsecureRequests: [],
       },
     },
   }),
