@@ -70,6 +70,7 @@ app.use(
           'https://*.stripe.com',
           'https://*.stripe.network',
           "'unsafe-inline'",
+          "'unsafe-hashes'"
         ],
         imgSrc: [
           "'self'",
