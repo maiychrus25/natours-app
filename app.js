@@ -47,6 +47,60 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set Security HTTP Headers
 // Giup che giau thong tin server va ngan chan cac ma doc
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'", 'https://*.stripe.com', 'https://*.mapbox.com'],
+
+        scriptSrc: [
+          "'self'",
+          'https://api.mapbox.com',
+          'https://cdn.jsdelivr.net',
+          'https://unpkg.com',
+          'https://*.stripe.com',
+          'https://cdnjs.cloudflare.com',
+        ],
+
+        styleSrc: [
+          "'self'",
+          'https://api.mapbox.com',
+          'https://fonts.googleapis.com',
+          'https://cdn.jsdelivr.net',
+          'https://unpkg.com',
+          'https://*.stripe.network',
+          "'unsafe-inline'", // Mapbox cần
+        ],
+
+        imgSrc: [
+          "'self'",
+          'data:',
+          'blob:',
+          'https://api.mapbox.com',
+          'https://res.cloudinary.com',
+          'https://lh3.googleusercontent.com',
+        ],
+
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+
+        connectSrc: [
+          "'self'",
+          'blob:',
+          'https://api.mapbox.com',
+          'https://events.mapbox.com',
+          'https://cdn.jsdelivr.net',
+          'ws://localhost:*',
+          'https://res.cloudinary.com',
+        ],
+
+        workerSrc: ["'self'", 'blob:'],
+        mediaSrc: ["'self'", 'blob:', 'data:', 'https://res.cloudinary.com'],
+        frameSrc: ["'self'", 'https://*.stripe.com'],
+        objectSrc: ["'none'"],
+      },
+    },
+  }),
+);
 
 // 1) Cau hinh trust proxy (rat qun trong khi deploy len heroku, vercel, AWS, ...)
 // Neu khong co dong nay, limiter se chan nham IP cua server proxy thay vi IP user
@@ -128,60 +182,3 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandle);
 
 module.exports = app;
-
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       directives: {
-//         defaultSrc: ["'self'", "https://*.stripe.com", "https://*.mapbox.com"],
-//
-//         scriptSrc: [
-//           "'self'",
-//           "https://api.mapbox.com",
-//           "https://cdn.jsdelivr.net",
-//           "https://unpkg.com",
-//           "https://*.stripe.com",
-//           "https://cdnjs.cloudflare.com"
-//         ],
-//
-//         styleSrc: [
-//           "'self'",
-//           "https://api.mapbox.com",
-//           "https://fonts.googleapis.com",
-//           "https://cdn.jsdelivr.net",
-//           "https://unpkg.com",
-//           "https://*.stripe.network",
-//           "'unsafe-inline'" // Mapbox cần
-//         ],
-//
-//         imgSrc: [
-//           "'self'",
-//           "data:",
-//           "blob:",
-//           "https://api.mapbox.com",
-//           "https://res.cloudinary.com",
-//           "https://lh3.googleusercontent.com"
-//         ],
-//
-//         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-//
-//         connectSrc: [
-//           "'self'",
-//           "blob:",
-//           "https://api.mapbox.com",
-//           "https://events.mapbox.com",
-//           "https://cdn.jsdelivr.net",
-//           "ws://localhost:*",
-//           "https://res.cloudinary.com"
-//         ],
-//
-//         workerSrc: ["'self'", "blob:"],
-//         mediaSrc: ["'self'", "blob:", "data:", "https://res.cloudinary.com"],
-//         frameSrc: ["'self'", "https://*.stripe.com"],
-//         objectSrc: ["'none'"],
-//         upgradeInsecureRequests: []
-//       }
-//     }
-//   })
-// );
-//
