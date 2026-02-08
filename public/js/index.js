@@ -15,7 +15,12 @@ const mapContainer = document.getElementById('map');
 const photoInput = document.querySelector('#photo');
 const photoPreview = document.querySelector('.form__user-photo');
 const bookBtn = document.querySelector('#book-tour');
-const alertMessage = document.querySelector(body).dataset.alert;
+const alert = document.querySelector('body');
+
+let alertMessage;
+if (alert) {
+  alertMessage = alert.dataset.alert;
+}
 
 // Alert booking tour
 if (alertMessage) {

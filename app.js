@@ -51,52 +51,46 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'", 'https://*.stripe.com', 'https://*.mapbox.com'],
-
+        defaultSrc: ["'self'", 'https://*.stripe.com', 'https://*.mapbox.com', 'https://*.stripe.network'],
         scriptSrc: [
           "'self'",
           'https://api.mapbox.com',
-          'https://cdn.jsdelivr.net',
-          'https://unpkg.com',
           'https://*.stripe.com',
           'https://cdnjs.cloudflare.com',
+          'https://cdn.jsdelivr.net',
+          'https://unpkg.com',
+          "'unsafe-inline'",
         ],
-
         styleSrc: [
           "'self'",
           'https://api.mapbox.com',
           'https://fonts.googleapis.com',
-          'https://cdn.jsdelivr.net',
-          'https://unpkg.com',
+          'https://*.stripe.com',
           'https://*.stripe.network',
-          "'unsafe-inline'", // Mapbox cần
+          "'unsafe-inline'",
         ],
-
         imgSrc: [
           "'self'",
           'data:',
           'blob:',
-          'https://api.mapbox.com',
+          'https://*.mapbox.com',
           'https://res.cloudinary.com',
-          'https://lh3.googleusercontent.com',
+          'https://*.stripe.com',
+          'https://*.googleusercontent.com',
         ],
-
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-
         connectSrc: [
           "'self'",
           'blob:',
-          'https://api.mapbox.com',
+          'https://*.mapbox.com',
+          'https://*.stripe.com',
           'https://events.mapbox.com',
-          'https://cdn.jsdelivr.net',
           'ws://localhost:*',
-          'https://res.cloudinary.com',
         ],
-
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
+        frameSrc: ["'self'", 'https://*.stripe.com', 'https://*.stripe.network'],
+        childSrc: ["'self'", 'blob:'],
         workerSrc: ["'self'", 'blob:'],
-        mediaSrc: ["'self'", 'blob:', 'data:', 'https://res.cloudinary.com'],
-        frameSrc: ["'self'", 'https://*.stripe.com'],
-        objectSrc: ["'none'"],
+        upgradeInsecureRequests: true 
       },
     },
   }),
